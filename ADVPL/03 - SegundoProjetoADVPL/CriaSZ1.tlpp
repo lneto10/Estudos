@@ -1,0 +1,31 @@
+#Include 'Protheus.ch'
+#Include 'Totvs.ch'
+#Include 'topconn.ch'
+
+ 
+
+
+/*/{Protheus.doc} CriaSZ1
+description: Função para criar tabela no banco de dados
+@type function
+@version  
+@author luiz.neto
+@since 25/05/2022
+@return variant, return_description
+@see https://tdn.totvs.com/display/tec/DBSelectArea
+@see https://tdn.totvs.com/pages/viewpage.action?pageId=23889281
+@see https://tdn.totvs.com/display/tec/DBSetOrder
+/*/
+
+
+User Function CriaSZ1()
+
+DbSelectArea("SZ1")
+DBSetOrder(1)
+DBCloseArea()
+
+
+
+RETURN
+
+

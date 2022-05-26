@@ -1,0 +1,129 @@
+#Include 'Totvs.ch'
+#Include 'Protheus.ch'
+
+User Function zTGet2()
+
+
+Local oDgl1
+Local oButton1
+Local oButton2  
+Local oButton3
+Local oButton4
+Local cTitulo := "Bloqueador de Cadastros"
+Local oSay1 // fornecedor
+Local oSay2 // loja fornecedor
+Local oSay3 // cliente
+Local oSay4 // loja cliente
+Local oSay5 // produto
+Local oFont1 // fonte para o oSay 
+Local oFont2 // fonte para os botoes
+ // Varivel que irÃ¡ receber o texto
+Local cGet2 := Space(4)
+Local cGet3 := Space(6)
+Local cGet4 := Space(4)
+Local cGet5 := Space(30)
+
+Local oGet2
+Local oGet3
+Local oGet4
+Local oGet5
+Local oTFolder 
+Local aFolder
+Private cGet1 := Space(6)
+Private oGet1 
+
+ 
+oDgl1          := TDialog():New(0,0,800,800,cTitulo,,,,,CLR_BLACK,CLR_WHITE,,,.T.) //VariÃ¡vel que irÃ¡ receber a chamada da classe TDialog
+oFont1         := TFont():New('Calibri',,16,,.T.)
+oFont2         := TFont():New('Arial',,16,.T.)
+aFolder        := {"Fornecedor", "Cliente", "Produto"}
+oTFolder      := TFolder():New(20,0,aFolder,aFolder,oDgl1,,,,.T.,,200,400)
+
+
+
+oSay1          := TSay():New(10,10,{||'Fornecedor'},oTFolder:aDialogs[1],,oFont1,,,,.T.,CLR_RED,CLR_WHITE,300,20)
+oSay2          := TSay():New(10,80,{||'Loja Forn'},oTFolder:aDialogs[1],,oFont1,,,,.T.,CLR_RED,CLR_WHITE,300,20)
+oSay3          := TSay():New(10,10,{||'Cliente'},oTFolder:aDialogs[2],,oFont1,,,,.T.,CLR_RED,CLR_WHITE,300,20)
+oSay4          := TSay():New(10,80,{||'Loja Cliente'},oTFolder:aDialogs[2],,oFont1,,,,.T.,CLR_RED,CLR_WHITE,300,20)
+oSay5          := TSay():New(10,10,{||'Produto'},oTFolder:aDialogs[3],,oFont1,,,,.T.,CLR_RED,CLR_WHITE,300,20)
+
+oGet1          := TGet():New( 25,10,{|u| IIF( Pcount()>0,cGet1:= u,cGet1)},oTFolder:aDialogs[1],40,10,"@!",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,cGet1,,,, ) //Cod Fornecedor
+oGet2          := TGet():New( 25,80,{|u| IIF( Pcount()>0,cGet2:= u,cGet2)},oTFolder:aDialogs[1],30,10,"@!",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,cGet2,,,, ) // loja fornecedor
+oGet3          := TGet():New( 25,10,{|u| IIF( Pcount()>0,cGet3:= u,cGet3)},oTFolder:aDialogs[2],40,10,"@!",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,cGet3,,,, ) // cliente
+oGet4          := TGet():New( 25,80,{|u| IIF( Pcount()>0,cGet4:= u,cGet4)},oTFolder:aDialogs[2],40,10,"@!",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,cGet4,,,, ) // loja cliente
+oGet5          := TGet():New( 25,10,{|u| IIF( Pcount()>0,cGet5:= u,cGet5)},oTFolder:aDialogs[3],40,10,"@!",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,cGet5,,,, ) // Produto
+
+oButton1       := oTButton := TButton():New( 60, 10, "Bloquear Fornecedor",oTFolder:aDialogs[1],{||fBloq(cGet1,cGet2)}, 60,20,,oFont2,.F.,.T.,.F.,,.F.,,,.F. ) // Bloqueia fornecdor
+oButton2       := oTButton := TButton():New( 60, 80, "Desbloquear Fornecedor",oTFolder:aDialogs[1],{||fDBloq(cGet1,cGet2)}, 60,20,,oFont2,.F.,.T.,.F.,,.F.,,,.F. )
+oButton3       := oTButton := TButton():New( 60, 10, "Bloquear Cliente",oTFolder:aDialogs[2],{||fCBloq(cGet3,cGet4)}, 60,20,,oFont2,.F.,.T.,.F.,,.F.,,,.F. ) // bloqueia cliente
+oButton4       := oTButton := TButton():New( 60, 10, "Bloquear Produto",oTFolder:aDialogs[3],{||fPBloq(cGet5)}, 60,20,,oFont2,.F.,.T.,.F.,,.F.,,,.F. ) // bloqueia produto
+
+oGet1:cf3      := "SA2"
+oGet3:cf3      := "SA1"
+oGet5:cf3      := "SB1"
+
+
+
+
+
+
+
+
+oDgl1:Activate (,,,.T.)
+
+// Função para bloquear Fornecedor
+
+Static Function fBloq(cCod,cLoja) // variáveis em parâmetro recebe o conteúdo das variáveis cget1 e cget2
+
+    DbSelectArea("SA2")
+    SA2->(DbSeek(xFilial("SA2")+cCod+cLoja)) // Procurar nos registros pelo cliente e loja de acordo com o informado nos campos TGETS
+
+    RecLock("SA2", .F.) // Utilize o TRUE caso o comando seja para inclusão, e o FALSE para edição/alteração. 
+        SA2->A2_MSBLQL := '1'  
+    MsUnlock() // desbloqueia a tabela para utilização 
+
+    Alert ("O Fornecedor " +cCod+ "e loja " +cLoja+ " sera bloqueado!","Atencao")
+   
+
+return
+
+// Função para desbloquear fornecedor
+Static Function fDBloq(cCod,cLoja)
+
+    DbSelectArea ("SA2")
+    SA2->(DbSeek(xFilial("SA2")+cCod+cLoja))
+
+    if (SA2->A2_MSBLQL == '2') // valida se o fornecedor que está buscando já não está desbloqueado
+        MsgInfo("Fornecedor ja desbloqueado", "Atencao")
+    else 
+        RecLock ("SA2",.F.) // realiza o desbloqueio do cadastro
+            SA2->A2_MSBLQL := '2'
+        MsUnlock()
+        MsgInfo("Fornecedor desbloqueado","Registro desbloqueado")
+      
+    ENDIF
+return
+
+// Função para bloquear Cliente
+Static Function fCBloq(cCod,cLoja)
+
+  DBSelectArea("SA1")
+  SA1->(DbSeek(xFilial("SA1")+cCod+cLoja))
+    RecLock("SA1",.F.)
+      SA1->A1_MSBLQL  := '1'
+    MsUnLock()
+      MsgInfo("Cliente bloqueado","Registro bloqueado")
+Return
+
+// Função para bloquear Produto
+Static Function fPBloq(cCod)
+
+  DBSelectArea("SB1")
+    SB1->(DbSeek(xFilial("SB1")+cCod))
+      RecLock("SB1",.F.)
+        SB1->B1_MSBLQL := '1'
+      MsUnLock()
+    MsgInfo("Produto Bloqueado","Aviso")
+return
+
+Return

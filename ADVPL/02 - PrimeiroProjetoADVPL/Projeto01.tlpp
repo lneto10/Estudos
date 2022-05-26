@@ -1,0 +1,141 @@
+#Include 'Protheus.ch'
+#Include 'Totvs.ch'
+
+
+User Function Projeto01()
+//Variáveis da janela 
+Private oDlg1 
+Private cTituloJanela := "PROJETO01 - Primeira tela em ADVPL"
+
+
+
+//Declarar as variáveis do Folder
+Private oFolder
+Private aFolder 
+
+// Variáveis referente aos objetos do Folder1 (Dados pessoais)
+ Private oSayNome
+ Private oGetNome
+ Private cGetNome 
+
+ Private oSayNomeReduz
+ Private oGetNomeReduz
+ Private cGeTNomeReduz
+
+ Private oSayDatNasc
+ Private oGetDatNasc
+ Private cGetNasc
+
+ Private oSayDDDCel
+ Private oGetDDDCel
+ Private cGetDDDCel
+
+ Private oSayCel 
+ Private oGetCel
+ Private cGetCel
+
+ Private oGroupSexo // Agrupador de elementos que receberá os Radiobuttons de sexo
+
+// Criação do RadioButtons
+ Private aSexo := {"Masculino","Feminino"}
+ private nSexo := 2
+ Private oRadioSexo
+
+ Private oSayCPF
+ Private oGetCPF
+ Private cGetCPF
+
+
+//Variáveis referente aos objetos do Folder2 (Endereço)
+
+Private oSayEndereco 
+Private oGetEndereco 
+Private cGetEndereco 
+
+Private oSayBairro 
+Private oGetBairro 
+Private cGetBairro 
+
+Private oSayImovel
+Private aImoveis := {"Casa", "Apartamento", "Outro"}
+Private cIMovel  := aImoveis[2]
+Private cComboImovel
+
+Private oSayCep 
+Private oGetCep 
+Private cGetCep
+
+Private oSayEstado
+Private aEstados      := {"AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RO", "RS", "RR", "SC", "SE", "SP", "TO"}
+Private cEstados      := aEstados[1]
+Private oComboEstado
+
+Private oSayCidade
+Private oGetCidade
+Private cGetCidade
+
+// Variáveis referente aos objetos do Folder3 (Outros)
+
+
+// Construcao da tela 
+oDlg1 := TDialog():New(0,0,720,1280,cTituloJanela,,,,,CLR_BLACK,CLR_WHITE,,,.T.)
+aFolder := {"Dados Pessoais", "Endereço","Outros"}
+oFolder := TFolder():New(0,0,aFolder,aFolder,oDlg1,,,,.T.,,600,200)
+
+// Elementos visuais do Folder 1 (Dados pessoais)
+oSayNome         := TSay():New (01,05,{||'Nome'},oFolder:aDialogs[1],,,,,,.T.,CLR_BLUE,CLR_WHITE,300,20)
+cGetNome         := Space(30)
+oGetNome         := TGet():New(10,05,{|u|IIF(Pcount()>0,cGetNome:=u,cGetNome)},oFolder:aDialogs[1],096,009,"@!",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,cGetNome,,,,)
+
+oSayNomeReduz    := TSay():New (01,110,{||'Nome Reduzido'},oFolder:aDialogs[1],,,,,,.T.,CLR_BLUE,CLR_WHITE,300,20)
+cGetNomeReduz    := Space(30)
+oGetNomeReduz    := TGet():New(10,110,{|u|IIF(Pcount()>0,cGetNomeReduz:=u,cGetNomeReduz)},oFolder:aDialogs[1],60,009,"@!",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,cGetNomeReduz,,,,)
+
+oSayDatNasc      := TSay():New (01,180,{||'Data de Nascimento'},oFolder:aDialogs[1],,,,,,.T.,CLR_BLUE,CLR_WHITE,300,20)
+cGetDatNasc      := Date() //Função que retorna a data atual
+oGetDatNasc      := TGet():New(10,180,{|u|IIF(Pcount()>0,cGetDatNasc:=u,cGetDatNasc)},oFolder:aDialogs[1],60,009,"",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,/**/,,,,.T.)
+
+oSayDDDCel       := TSay():New (01,250,{||'DDD'},oFolder:aDialogs[1],,,,,,.T.,CLR_BLUE,CLR_WHITE,300,20)
+cGetDDDCel       := Space(3)
+oGetDDDCel       := TGet():New(10,250,{|u|IIF(Pcount()>0,cGetDDDCel:=u,cGetDDDCel)},oFolder:aDialogs[1],20,009,"@!",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,cGetDDDCel,,,,.T.)
+
+oSayCel          := TSay():New (01,280,{||'Celular'},oFolder:aDialogs[1],,,,,,.T.,CLR_BLUE,CLR_WHITE,300,20)
+cGetCel          := Space(9)
+oGetCel          := TGet():New(10,280,{|u|IIF(Pcount()>0,cGetCel:=u,cGetCel)},oFolder:aDialogs[1],40,009,"@E 9-9999-9999",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,cGetCel,,,,.T.)
+
+oGroupSexo       := tGroup():New(01,330,50,430,"Sexo",oFolder:aDialogs[1],,,.T.) 
+
+oRadioSexo       := tRadMenu():New(10,340,aSexo,{|u| iif(Pcount()>0,nSexo := u,nSexo )},oFolder:aDialogs[1],,,,,,,,60,20,,,,.T.)
+
+oSayCPF          := TSay():New (25,05,{||'CPF'},oFolder:aDialogs[1],,,,,,.T.,CLR_BLUE,CLR_WHITE,300,20)
+cGetCPF          := Space(14)
+oGetCPF          := TGet():New(35,05,{|u|IIF(Pcount()>0,cGetCPF:=u,cGetCPF)},oFolder:aDialogs[1],096,009,"@E 999.999.999-99",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,cGetCPF,,,,)
+
+// Elementos visuais do Folder2 (Endereco)
+
+oSayEndereco         := TSay():New (01,05,{||'Endereço'},oFolder:aDialogs[2],,,,,,.T.,CLR_BLUE,CLR_WHITE,300,20)
+cGetEndereco         := Space(30)
+oGetEndereco         := TGet():New(10,05,{|u|IIF(Pcount()>0,cGetEndereco:=u,cGetEndereco)},oFolder:aDialogs[2],096,009,"@!",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,cGetEndereco,,,,)
+
+oSayBairro           := TSay():New (01,110,{||'Bairro'},oFolder:aDialogs[2],,,,,,.T.,CLR_BLUE,CLR_WHITE,300,20)
+cGetBairro           := Space(30)
+oGetBairro           := TGet():New(10,110,{|u|IIF(Pcount()>0,cGetBairro:=u,cGetBairro)},oFolder:aDialogs[2],60,009,"@!",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,cGetBairro,,,,)
+
+oSayImovel           := TSay():New (01,180,{||'Tipo de Imóvel'},oFolder:aDialogs[2],,,,,,.T.,CLR_BLUE,CLR_WHITE,300,20)
+oComboImovel         := tComboBox():New(010,180,{|u|if(PCount()>0,cImovel:=u,cImovel)},aImoveis,60,20,oFolder:aDialogs[2],,,,,,.T.,,,,,,,,,'cImovel')
+
+oSayCep              := TSay():New (01,250,{||'Bairro'},oFolder:aDialogs[2],,,,,,.T.,CLR_BLUE,CLR_WHITE,300,20)
+cGetCep              := Space(9)
+oGetCep              := TGet():New(10,250,{|u|IIF(Pcount()>0,cGetCep:=u,cGetCep)},oFolder:aDialogs[2],30,009,"@E 99999-999",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,cGetCep,,,,)
+
+oSayEstado           := TSay():New(25,05,{||'Estado'},oFolder:aDialogs[2],,,,,,.T.,CLR_BLUE,CLR_WHITE,300,20)
+oComboEstado         := tComboBox():New(35,05,{|u|if(PCount()>0,cEstados:=u,cEstados)},aEstados,40,20,oFolder:aDialogs[2],,,,,,.T.,,,,,,,,,'cEstado')
+
+oSayCidade           := TSay():New(25,50,{||'Cidade'},oFolder:aDialogs[2],,,,,,.T.,CLR_BLUE,CLR_WHITE,300,20)
+cGetCidade           := Space(30)
+oGetCidade           := TGet():New( 35,50,{|u| IIF(Pcount()>0,cGetCidade:=u,cGetCidade)},oFolder:aDialogs[2],096,009,"",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,cGetCidade,,,, )
+
+oDlg1:Activate (,,,.T.)
+
+
+Return 
