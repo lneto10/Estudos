@@ -131,10 +131,10 @@ oFolder := TFolder():New(0,0,aFolder,aFolder,oDlg1,,,,.T.,,600,200)
 
 // Elementos visuais do Folder 1 (Dados pessoais)
 
-oSayCodigo         := TSay():New (01,05,{||'Codigo'},oFolder:aDialogs[1],,,,,,.T.,CLR_BLUE,CLR_WHITE,300,20)
-cGetCodigo         := Space(6)
-oGetCodigo         := TGet():New(10,05,{|u|IIF(Pcount()>0,cGetCodigo:=u,cGetCodigo)},oFolder:aDialogs[1],030,009,"@!",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,cGetCodigo,,,,)
-
+oSayCodigo       := TSay():New (01,05,{||'Codigo'},oFolder:aDialogs[1],,,,,,.T.,CLR_BLUE,CLR_WHITE,300,20)
+cGetCodigo       := Space(6)
+oGetCodigo       := TGet():New(10,05,{|u|IIF(Pcount()>0,cGetCodigo:=u,cGetCodigo)},oFolder:aDialogs[1],030,009,"@!",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,cGetCodigo,,,,)
+oGetCodigo:cf3   := "SZ1"
 
 oSayNome         := TSay():New (21,05,{||'Nome'},oFolder:aDialogs[1],,,,,,.T.,CLR_BLUE,CLR_WHITE,300,20)
 cGetNome         := Space(30)
@@ -153,10 +153,10 @@ cGetDDDCel       := Space(3)
 oGetDDDCel       := TGet():New(30,250,{|u|IIF(Pcount()>0,cGetDDDCel:=u,cGetDDDCel)},oFolder:aDialogs[1],20,009,"@!",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,cGetDDDCel,,,,.T.)
 
 oSayCel          := TSay():New (21,280,{||'Celular'},oFolder:aDialogs[1],,,,,,.T.,CLR_BLUE,CLR_WHITE,300,20)
-cGetCel          := Space(9)
+cGetCel          := Space(11)
 oGetCel          := TGet():New(30,280,{|u|IIF(Pcount()>0,cGetCel:=u,cGetCel)},oFolder:aDialogs[1],40,009,"@E 9-9999-9999",,0,,,.F.,,.T.,,.F.,,.F.,.F.,,.F.,.F.,,cGetCel,,,,.T.)
 
-oGroupSexo       := tGroup():New(21,330,50,430,"Sexo",oFolder:aDialogs[1],,,.T.) 
+oGroupSexo       := tGroup():New(21,330,60,430,"Sexo",oFolder:aDialogs[1],,,.T.) 
 
 oRadioSexo       := tRadMenu():New(30,340,aSexo,{|u| iif(Pcount()>0,nSexo := u,nSexo )},oFolder:aDialogs[1],,,,,,,,60,20,,,,.T.)
 
@@ -218,7 +218,7 @@ oButtonMarkAll       := TButton():New(15, 200, "Todas", oFolder:aDialogs[3],{|| 
 
 oButtonIncluir      := TButton():New(250, 20, "Incluir",    oDlg1,{||IncluirSZ1() }, 40,15,,,.F.,.T.,.F.,,.F.,,,.F. ) 
 oButtonAlterar      := TButton():New(250, 80, "Alterar",    oDlg1,{|| }, 40,15,,,.F.,.T.,.F.,,.F.,,,.F. ) 
-oButtonConsultar    := TButton():New(250, 140, "Consultar", oDlg1,{|| }, 40,15,,,.F.,.T.,.F.,,.F.,,,.F. ) 
+oButtonConsultar    := TButton():New(250, 140, "Consultar", oDlg1,{||BuscarSZ1() }, 40,15,,,.F.,.T.,.F.,,.F.,,,.F. ) 
 oButtonExcluir      := TButton():New(250, 200, "Excluir",   oDlg1,{|| }, 40,15,,,.F.,.T.,.F.,,.F.,,,.F. ) 
 
 oBmpIncluir := TBitmap():New(220,30,142,142,,"C:\TOTVS25\protheus_data\system\incluirprotheuzeiro.bmp",.T.,oDlg1,{||Alert(IncluirSZ1())},,.F.,.F.,,,.F.,,.T.,,.F.)
@@ -227,7 +227,7 @@ oBmpIncluir:lAutoSize := .T.
 oBmpAlterar := TBitmap():New(220,90,142,142,,"C:\TOTVS25\protheus_data\system\alterarprotheuzeiro.bmp",.T.,oDlg1,{||Alert("Clicou em ImagemAlterar")},,.F.,.F.,,,.F.,,.T.,,.F.)
 oBmpAlterar:lAutoSize := .T.
 
-oBmpConsultar := TBitmap():New(220,150,142,142,,"C:\TOTVS25\protheus_data\system\consultarprotheuzeiro.bmp",.T.,oDlg1,{||Alert("Clicou em ImagemConsultar")},,.F.,.F.,,,.F.,,.T.,,.F.)
+oBmpConsultar := TBitmap():New(220,150,142,142,,"C:\TOTVS25\protheus_data\system\consultarprotheuzeiro.bmp",.T.,oDlg1,{||Alert(BuscarSZ1())},,.F.,.F.,,,.F.,,.T.,,.F.)
 oBmpConsultar:lAutoSize := .T.
 
 oBmpExcluir := TBitmap():New(220,210,142,142,,"C:\TOTVS25\protheus_data\system\excluirprotheuzeiro.bmp",.T.,oDlg1,{||Alert("Clicou em ImagemExcluir")},,.F.,.F.,,,.F.,,.T.,,.F.)
@@ -252,21 +252,21 @@ SZ1->Z1_COD      := cGetCodigo
 SZ1->Z1_NOME     := cGetNome
 SZ1->Z1_NOMERED  := cGeTNomeReduz
 SZ1->Z1_DATNASC  := cGetDatNasc
-SZ1->Z1_DDDCEL   := Replace(cGetDDDCel)
-SZ1->Z1_CELULAR  := StrTtran(cGetCel,"-","")
-SZ1->Z1_SEXO     := nSexo // 1 - para masculino | 2 - Para feminino 
-SZ1->Z1_CPF      := StrTran(StrTran(cGetCPF,"-",""),"-","")
+SZ1->Z1_DDDCEL   := cGetDDDCel
+SZ1->Z1_CELULAR  := StrTran(cGetCel,"-","")
+SZ1->Z1_SEXO     := cValtoChar(nSexo) // 1 - para masculino | 2 - Para feminino 
+SZ1->Z1_CPF      := StrTran(StrTran(cGetCPF,".",""),"-","")
 /// Dados Endereco
-SZ1->Z1_ENDEREC  := cGetEnderecocGetNome
-SZ1->Z1_BAIRRO   := cGetBairrocGetNome
-SZ1->Z1_TIPOIMO  := cImovelcGetNome
-SZ1->Z1_ESTADO   := cEstadoscGetNome
+SZ1->Z1_ENDEREC  := cGetEndereco
+SZ1->Z1_BAIRRO   := cGetBairro
+SZ1->Z1_TIPOIMO  := cImovel
+SZ1->Z1_ESTADO   := cEstados
 SZ1->Z1_CIDADE   := cGetCidade
 SZ1->Z1_CEP      := StrTran(cGetCep,"-","")
 
 // Dados Outros
 SZ1->Z1_ESTADOC  := cEstCivil
-SZ1->Z1_TEMPET   := nPet // 1 - Possui pet | 2 - Não possui PET
+SZ1->Z1_TEMPET   := cValToChar(nPet) // 1 - Possui pet | 2 - Não possui PET
 SZ1->Z1_LADVPL   := IIF(lCheckAdvpl,"1","2") // 1 - Sim | 2 - Nao
 SZ1->Z1_LSQL     := IIF(lCheckSQL,"1","2")
 SZ1->Z1_LCS      := IIF(lCheckC,"1","2")
@@ -276,7 +276,49 @@ MsUnlock()
 DbCloseArea()
 
 MsgInfo ("Cadastro incluido com sucesso","Aviso")
+oDlg1:End()
+
 Return 
+
+Static Function BuscarSZ1()
+
+  DbSelectArea ("SZ1")
+  DbSetOrder (1)
+  If DbSeek (xFilial("SZ1")+cGetCodigo)
+        MsgInfo ("Cadastro Localizado","Sucesso")
+        // Dados cadastrais    
+        cGetNome       := SZ1->Z1_NOME     
+        cGeTNomeReduz  := SZ1->Z1_NOMERED  
+        cGetDatNasc    := SZ1->Z1_DATNASC  
+        cGetDDDCel     := SZ1->Z1_DDDCEL   
+        cGetCel        := SZ1->Z1_CELULAR  
+        nSexo          := Val(SZ1->Z1_SEXO)    
+        cGetCPF        := SZ1->Z1_CPF      
+/// Dados Endereco
+        cGetEndereco   := SZ1->Z1_ENDEREC  
+        cGetBairro     := SZ1->Z1_BAIRRO   
+        cImovel        := SZ1->Z1_TIPOIMO  
+        cEstados       := SZ1->Z1_ESTADO   
+        cGetCidade     := SZ1->Z1_CIDADE   
+        cGetCep         := SZ1->Z1_CEP      
+
+// Dados Outros
+        cEstCivil      := SZ1->Z1_ESTADOC  
+        nPet           := Val(SZ1->Z1_TEMPET)   
+        lCheckAdvpl    := IIF(SZ1->Z1_LADVPL == "1", .T.,.F.)   
+        lCheckSQL      := IIF(SZ1->Z1_LSQL == "1",.T.,.F.)    
+        lCheckC        := IIF(SZ1->Z1_LCS == "1", .T.,.F.)      
+        lCheckJava     := IIF(SZ1->Z1_JAVA == "1",.T.,.F.)     
+        cObservacao    := SZ1->Z1_OBS  
+  else 
+        Alert("Cadastro nao localizado","Erro!")
+  ENDIF
+  DbCloseArea()
+ 
+    
+
+
+Return
 
 
 
