@@ -3,10 +3,21 @@
 #Include 'Topconn.ch'
 
 
+/*/{Protheus.doc} Projeto02
+description Rotina de cadastro de usuario com integração com o banco de tabelas (tabela SZ1). Rotina desenvolvida no módulo Projeto 02 do curso FCP 2.0.
+@type function
+@version  1.0
+@author luiz.neto
+@since 11/06/2022
+@return variant, return_description
+/*/
 User Function Projeto02()
+
+
+
 //VariÃ¡veis da janela 
 Private oDlg1 
-Private cTituloJanela := ":::Cadastro teste em ADVPL com Banco de Dados"
+Private cTituloJanela := ":::Cadastro De usuário ADVPL com Banco de Dados"
 
 
 
@@ -16,40 +27,40 @@ Private aFolder
 
 // VariÃ¡veis referente aos objetos do Folder1 (Dados pessoais)
 
-  Private oSayCodigo
-  Private oGetCodigo
-  Private cGetCodigo 
+Private oSayCodigo
+Private oGetCodigo
+Private cGetCodigo 
 
- Private oSayNome
- Private oGetNome
- Private cGetNome 
+Private oSayNome
+Private oGetNome
+Private cGetNome 
 
- Private oSayNomeReduz
- Private oGetNomeReduz
- Private cGeTNomeReduz
+Private oSayNomeReduz
+Private oGetNomeReduz
+Private cGeTNomeReduz
 
- Private oSayDatNasc
- Private oGetDatNasc
- Private cGetNasc
+Private oSayDatNasc
+Private oGetDatNasc
+Private cGetNasc
 
- Private oSayDDDCel
- Private oGetDDDCel
- Private cGetDDDCel
+Private oSayDDDCel
+Private oGetDDDCel
+Private cGetDDDCel
 
- Private oSayCel 
- Private oGetCel
- Private cGetCel
+Private oSayCel 
+Private oGetCel
+Private cGetCel
 
- Private oGroupSexo // Agrupador de elementos que receberÃ¡ os Radiobuttons de sexo
+Private oGroupSexo // Agrupador de elementos que receberÃ¡ os Radiobuttons de sexo
 
 // CriaÃ§Ã£o do RadioButtons
- Private aSexo := {"Masculino","Feminino"}
- private nSexo := 2
- Private oRadioSexo
+Private aSexo := {"Masculino","Feminino"}
+private nSexo := 2
+Private oRadioSexo
 
- Private oSayCPF
- Private oGetCPF
- Private cGetCPF
+Private oSayCPF
+Private oGetCPF
+Private cGetCPF
 
 
 //VariÃ¡veis referente aos objetos do Folder2 (EndereÃ§o)
@@ -118,10 +129,18 @@ Private oButtonAlterar
 Private oButtonConsultar
 Private oButtonExcluir
 
+Private oButtonSair
+Private oButtonLimparTela 
+
+
+
 Private oBmpIncluir
 Private oBmpAlterar
 Private oBmpConsultar
 Private oBmpExcluir
+
+Private oBmpSair
+Private oBmpLimparTela
 
 
 // Construcao da tela 
@@ -217,22 +236,30 @@ oButtonMarkAll       := TButton():New(15, 200, "Todas", oFolder:aDialogs[3],{|| 
 
 
 oButtonIncluir      := TButton():New(250, 20, "Incluir",    oDlg1,{||IncluirSZ1() }, 40,15,,,.F.,.T.,.F.,,.F.,,,.F. ) 
-oButtonAlterar      := TButton():New(250, 80, "Alterar",    oDlg1,{|| }, 40,15,,,.F.,.T.,.F.,,.F.,,,.F. ) 
+oButtonAlterar      := TButton():New(250, 80, "Alterar",    oDlg1,{||AlteraSZ1() }, 40,15,,,.F.,.T.,.F.,,.F.,,,.F. ) 
 oButtonConsultar    := TButton():New(250, 140, "Consultar", oDlg1,{||BuscarSZ1() }, 40,15,,,.F.,.T.,.F.,,.F.,,,.F. ) 
-oButtonExcluir      := TButton():New(250, 200, "Excluir",   oDlg1,{|| }, 40,15,,,.F.,.T.,.F.,,.F.,,,.F. ) 
+oButtonExcluir      := TButton():New(250, 200, "Excluir",   oDlg1,{||DeletarSZ1() }, 40,15,,,.F.,.T.,.F.,,.F.,,,.F. ) 
 
+oButtonLimparTela     := TButton():New(250, 280, "Limpar Tela",   oDlg1,{||LimparTela() }, 40,15,,,.F.,.T.,.F.,,.F.,,,.F. ) 
+oButtonSair      := TButton():New(250, 360, "Sair",   oDlg1,{||MsgInfo("Obrigado por usar o sistema","Volte Sempre"),oDlg1:END() }, 40,15,,,.F.,.T.,.F.,,.F.,,,.F. ) 
+
+// Botões no RODAPÉ
 oBmpIncluir := TBitmap():New(220,30,142,142,,"C:\TOTVS25\protheus_data\system\incluirprotheuzeiro.bmp",.T.,oDlg1,{||Alert(IncluirSZ1())},,.F.,.F.,,,.F.,,.T.,,.F.)
 oBmpIncluir:lAutoSize := .T.
 
-oBmpAlterar := TBitmap():New(220,90,142,142,,"C:\TOTVS25\protheus_data\system\alterarprotheuzeiro.bmp",.T.,oDlg1,{||Alert("Clicou em ImagemAlterar")},,.F.,.F.,,,.F.,,.T.,,.F.)
+oBmpAlterar := TBitmap():New(220,90,142,142,,"C:\TOTVS25\protheus_data\system\alterarprotheuzeiro.bmp",.T.,oDlg1,{||Alert(AlteraSZ1())},,.F.,.F.,,,.F.,,.T.,,.F.)
 oBmpAlterar:lAutoSize := .T.
 
 oBmpConsultar := TBitmap():New(220,150,142,142,,"C:\TOTVS25\protheus_data\system\consultarprotheuzeiro.bmp",.T.,oDlg1,{||Alert(BuscarSZ1())},,.F.,.F.,,,.F.,,.T.,,.F.)
 oBmpConsultar:lAutoSize := .T.
 
-oBmpExcluir := TBitmap():New(220,210,142,142,,"C:\TOTVS25\protheus_data\system\excluirprotheuzeiro.bmp",.T.,oDlg1,{||Alert("Clicou em ImagemExcluir")},,.F.,.F.,,,.F.,,.T.,,.F.)
+oBmpExcluir := TBitmap():New(220,210,142,142,,"C:\TOTVS25\protheus_data\system\excluirprotheuzeiro.bmp",.T.,oDlg1,{||Alert(DeletarSZ1())},,.F.,.F.,,,.F.,,.T.,,.F.)
 oBmpExcluir:lAutoSize := .T.
 
+oBmpLimparTela := TBitmap():New(220,280,142,142,,"C:\TOTVS25\protheus_data\system\limpartela.bmp",.T.,oDlg1,{||Alert(DeletarSZ1())},,.F.,.F.,,,.F.,,.T.,,.F.)
+oBmpLimparTela:lAutoSize := .T.
+oBmpSair := TBitmap():New(220,360,142,142,,"C:\TOTVS25\protheus_data\system\sair.bmp",.T.,oDlg1,{||Alert(DeletarSZ1())},,.F.,.F.,,,.F.,,.T.,,.F.)
+oBmpSair:lAutoSize := .T.
 
 oDlg1:Activate (,,,.T.)
 
@@ -242,65 +269,88 @@ Return
 
 Static Function IncluirSZ1()
 
-DbSelectArea("SZ1")
-RecLock("SZ1", .T.)
+      DbSelectArea("SZ1")
+      If DbSeek(xFilial("SZ1")+cGetCodigo) // Verifica se já existe o código
+
+            Alert ("O CODIGO JA EXISTE","Alerta")
+      Else
+
+      If Empty(cGetNome) .OR. Empty(cGetNomeReduz) .OR. Empty(cGetDatNasc) .OR. Empty(cGetDDDCel) .OR. Empty(cGetCel) .OR.  Empty(cGetCPF)
+
+            Alert ("Existem campos obrigatorios não preenchidos","Campos Obrigatorios")
+
+      Else 
+
+            RecLock("SZ1", .T.)
 
 //Dados cadastrais 
 
-SZ1->Z1_FILIAL   := xFilial("SZ1")
-SZ1->Z1_COD      := cGetCodigo 
-SZ1->Z1_NOME     := cGetNome
-SZ1->Z1_NOMERED  := cGeTNomeReduz
-SZ1->Z1_DATNASC  := cGetDatNasc
-SZ1->Z1_DDDCEL   := cGetDDDCel
-SZ1->Z1_CELULAR  := StrTran(cGetCel,"-","")
-SZ1->Z1_SEXO     := cValtoChar(nSexo) // 1 - para masculino | 2 - Para feminino 
-SZ1->Z1_CPF      := StrTran(StrTran(cGetCPF,".",""),"-","")
-/// Dados Endereco
-SZ1->Z1_ENDEREC  := cGetEndereco
-SZ1->Z1_BAIRRO   := cGetBairro
-SZ1->Z1_TIPOIMO  := cImovel
-SZ1->Z1_ESTADO   := cEstados
-SZ1->Z1_CIDADE   := cGetCidade
-SZ1->Z1_CEP      := StrTran(cGetCep,"-","")
+            SZ1->Z1_FILIAL   := xFilial("SZ1")
+            SZ1->Z1_COD      := cGetCodigo 
+            SZ1->Z1_NOME     := cGetNome
+            SZ1->Z1_NOMERED  := cGeTNomeReduz
+            SZ1->Z1_DATNASC  := cGetDatNasc
+            SZ1->Z1_DDDCEL   := cGetDDDCel
+            SZ1->Z1_CELULAR  := StrTran(cGetCel,"-","")  
+            SZ1->Z1_SEXO     := cValtoChar(nSexo) // 1 - para masculino | 2 - Para feminino 
+            SZ1->Z1_CPF      := StrTran(StrTran(cGetCPF,".",""),"-","")
+            /// Dados Endereco
+            SZ1->Z1_ENDEREC  := cGetEndereco
+            SZ1->Z1_BAIRRO   := cGetBairro
+            SZ1->Z1_TIPOIMO  := cImovel
+            SZ1->Z1_ESTADO   := cEstados
+            SZ1->Z1_CIDADE   := cGetCidade
+            SZ1->Z1_CEP      := StrTran(cGetCep,"-","")
 
-// Dados Outros
-SZ1->Z1_ESTADOC  := cEstCivil
-SZ1->Z1_TEMPET   := cValToChar(nPet) // 1 - Possui pet | 2 - Não possui PET
-SZ1->Z1_LADVPL   := IIF(lCheckAdvpl,"1","2") // 1 - Sim | 2 - Nao
-SZ1->Z1_LSQL     := IIF(lCheckSQL,"1","2")
-SZ1->Z1_LCS      := IIF(lCheckC,"1","2")
-SZ1->Z1_JAVA     := IIF(lCheckJava,"1","2")
-SZ1->Z1_OBS      := cObservacao
-MsUnlock()
-DbCloseArea()
+            // Dados Outros
+            SZ1->Z1_ESTADOC  := cEstCivil
+            SZ1->Z1_TEMPET   := cValToChar(nPet) // 1 - Possui pet | 2 - Não possui PET
+            SZ1->Z1_LADVPL   := IIF(lCheckAdvpl,"1","2") // 1 - Sim | 2 - Nao
+            SZ1->Z1_LSQL     := IIF(lCheckSQL,"1","2")
+            SZ1->Z1_LCS      := IIF(lCheckC,"1","2")
+            SZ1->Z1_JAVA     := IIF(lCheckJava,"1","2")
+            SZ1->Z1_OBS      := cObservacao
 
-MsgInfo ("Cadastro incluido com sucesso","Aviso")
-oDlg1:End()
+            MsUnlock()
+            DbCloseArea()
+
+            MsgInfo ("Cadastro incluido com sucesso","Aviso")
+
+      ENDIF
+      ENDIF
+      LimpaTela() // Chamar função para limpar os campos
 
 Return 
 
 Static Function BuscarSZ1()
 
-  DbSelectArea ("SZ1")
-  DbSetOrder (1)
-  If DbSeek (xFilial("SZ1")+cGetCodigo)
+      DbSelectArea ("SZ1")
+      DbSetOrder (1)
+
+      IF Empty(cGetNome) .OR. Empty(cGetNomeReduz) .OR. Empty(cGetDatNasc) .OR. Empty(cGetDDDCel) .OR. Empty(cGetCel) .OR.  Empty(cGetCPF)
+
+            Alert ("Existem campos obrigatorios nao preenchidos","Atencao")
+      else 
+      If DbSeek (xFilial("SZ1")+cGetCodigo)
         MsgInfo ("Cadastro Localizado","Sucesso")
         // Dados cadastrais    
+        
+           
+     
         cGetNome       := SZ1->Z1_NOME     
         cGeTNomeReduz  := SZ1->Z1_NOMERED  
         cGetDatNasc    := SZ1->Z1_DATNASC  
         cGetDDDCel     := SZ1->Z1_DDDCEL   
-        cGetCel        := SZ1->Z1_CELULAR  
+        cGetCel        := SUBSTR(SZ1->Z1_CELULAR,1,1)+"-"+SUBSTR(SZ1->Z1_CELULAR,2,4)+"-"+SUBSTR(SZ1->Z1_CELULAR,6,4) 
         nSexo          := Val(SZ1->Z1_SEXO)    
-        cGetCPF        := SZ1->Z1_CPF      
+        cGetCPF        := SUBSTR(SZ1->Z1_CPF,1,3)+"."+SUBSTR(SZ1->Z1_CPF,4,3)+"."+SUBSTR(SZ1->Z1_CPF,7,3)+"-"+SUBSTR(SZ1->Z1_CPF,10,2)      
 /// Dados Endereco
         cGetEndereco   := SZ1->Z1_ENDEREC  
         cGetBairro     := SZ1->Z1_BAIRRO   
         cImovel        := SZ1->Z1_TIPOIMO  
         cEstados       := SZ1->Z1_ESTADO   
         cGetCidade     := SZ1->Z1_CIDADE   
-        cGetCep         := SZ1->Z1_CEP      
+        cGetCep        := SUBSTR(SZ1->Z1_CEP, 1,5)+"-"+SUBSTR(SZ1->Z1_CEP,1,3)      
 
 // Dados Outros
         cEstCivil      := SZ1->Z1_ESTADOC  
@@ -310,12 +360,109 @@ Static Function BuscarSZ1()
         lCheckC        := IIF(SZ1->Z1_LCS == "1", .T.,.F.)      
         lCheckJava     := IIF(SZ1->Z1_JAVA == "1",.T.,.F.)     
         cObservacao    := SZ1->Z1_OBS  
-  else 
-        Alert("Cadastro nao localizado","Erro!")
-  ENDIF
-  DbCloseArea()
- 
+      
+      else 
+            Alert("Cadastro nao localizado","Erro!")
+      ENDIF
+      ENDIF
+  
+DbCloseArea()
     
+Return
+
+Static Function AlteraSZ1()
+
+DbSelectArea("SZ1")
+DbSetOrder(1)
+
+      If DbSeek (xFilial("SZ1")+cGetCodigo)
+            RecLock("SZ1", .F.)
+            SZ1->Z1_NOME     := cGetNome
+            SZ1->Z1_NOMERED  := cGeTNomeReduz
+            SZ1->Z1_DATNASC  := cGetDatNasc
+            SZ1->Z1_DDDCEL   := cGetDDDCel
+            SZ1->Z1_CELULAR  := StrTran(cGetCel,"-","")  
+            SZ1->Z1_SEXO     := cValtoChar(nSexo) // 1 - para masculino | 2 - Para feminino 
+            SZ1->Z1_CPF      := StrTran(StrTran(cGetCPF,".",""),"-","")
+/// Dados Endereco
+            SZ1->Z1_ENDEREC  := cGetEndereco
+            SZ1->Z1_BAIRRO   := cGetBairro
+            SZ1->Z1_TIPOIMO  := cImovel
+            SZ1->Z1_ESTADO   := cEstados
+            SZ1->Z1_CIDADE   := cGetCidade
+            SZ1->Z1_CEP      := StrTran(cGetCep,"-","")
+
+// Dados Outros
+            SZ1->Z1_ESTADOC  := cEstCivil
+            SZ1->Z1_TEMPET   := cValToChar(nPet) // 1 - Possui pet | 2 - Não possui PET
+            SZ1->Z1_LADVPL   := IIF(lCheckAdvpl,"1","2") // 1 - Sim | 2 - Nao
+            SZ1->Z1_LSQL     := IIF(lCheckSQL,"1","2")
+            SZ1->Z1_LCS      := IIF(lCheckC,"1","2")
+            SZ1->Z1_JAVA     := IIF(lCheckJava,"1","2")
+            SZ1->Z1_OBS      := cObservacao
+
+             MsgInfo ("Cadastro Localizado","Sucesso")
+      MsUnlock()
+      DbCloseArea()
+      else 
+            Alert ("Cadastro nao localizado","Erro")
+      ENDIF
+
+Return
+
+
+Static Function DeletarSZ1()
+
+IF MsgYesNo("Deseja realizar a exclusao? ", "Atencao")
+
+
+      DbSelectArea("SZ1")
+      DbSetOrder(1)
+
+      If DbSeek (xFilial("SZ1")+cGetCodigo)
+            RecLock ("SZ1",.F.)
+            dbDelete()
+            MsgInfo ("Usuario deletado com sucesso","Sucesso")
+            LimpaTela()
+            
+      else 
+            Alert ("Cadastro nao localizado","Erro")
+      ENDIF
+      MsUnlock()
+      DbCloseArea()
+            
+else
+      ALERT("Operacao cancelada")
+ENDIF
+
+Return
+
+Static Function LimpaTela()
+
+        cGetCodigo     := Space(6)
+        cGetNome       := Space(30)     
+        cGeTNomeReduz  := Space(30)  
+        cGetDatNasc    := Date()  
+        cGetDDDCel     := Space(3)   
+        cGetCel        := Space(11) 
+        nSexo          := 1    
+        cGetCPF        := Space(14)      
+/// Dados Endereco
+        cGetEndereco   := Space(30)  
+        cGetBairro     := Space(30)   
+        cImovel        := aImoveis[1]  
+        cEstados       := aEstados[1]   
+        cGetCidade     := Space(30)   
+        cGetCep        := Space(9)      
+
+// Dados Outros
+        cEstCivil      := aEstCivil[1]  
+        nPet           := 2   
+        lCheckAdvpl    := .F.   
+        lCheckSQL      := .F.    
+        lCheckC        := .F.      
+        lCheckJava     := .F.     
+        cObservacao    := "Digite aqui a observacao"
 
 
 Return

@@ -1,0 +1,27 @@
+#Include 'Protheus.ch'
+
+
+/*/{Protheus.doc} A10TOKVALID
+description Funcao que irá validar o cadastro do produto 
+@type function
+@version  
+@author luiz.neto
+@since 10/06/2022
+@return variant, return_description
+/*/
+User Function A10TOKVALID(cGrupo)
+Local aGrupos := {"0006,0008,0007"}
+Local nX := 1 
+Local lReturn := .T.
+
+
+    
+    For nX := 1 to len (aGrupos)  
+        IF cGrupo $ aGrupos [nX]
+            lReturn := .F.
+            Alert ("Grupo de produto proibido para esse usuario funcao A10TOK","Atencao")
+        ENDIF
+    Next 
+
+
+RETURN (lReturn)

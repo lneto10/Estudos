@@ -1,0 +1,25 @@
+#INCLUDE 'Protheus.ch'
+
+
+/*/{Protheus.doc} A010TOK
+description Verificar se o produto é dos grupos para impedir a inclusão
+@type function
+@version  
+@author luiz.neto
+@since 10/06/2022
+@return variant, return_description
+@see https://tdn.totvs.com/pages/releaseview.action?pageId=6087477
+@see https://tdn.totvs.com/display/tec/Operadores+Comuns
+/*/
+User Function A010TOK()
+Local lRet := .T.
+
+
+IF Inclui 
+    lRet := u_A10TOKVALID(M->B1_GRUPO)
+    
+ENDIF
+
+
+
+RETURN (lRet)

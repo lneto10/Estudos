@@ -1,0 +1,29 @@
+#Include 'Protheus.ch'
+
+
+
+/*/{Protheus.doc} M030INC
+description Ponto de entrada na inclusão do cadastro de cliente, para gravar o usuário responsável pelo cadastro e o cliente nascer como bloqueado. 
+@type function
+@version  
+@author luiz.neto
+@since 11/06/2022
+@return variant, return_description
+/*/
+User Function M030INC ()
+Local aArea := GetArea()
+
+If PARAMIXB <> 3 
+    MsgInfo("Você acabou de cadastrar o cliente: "+Chr(10)+Chr(13)+;
+    M->A1_NOME)
+
+
+    RecLock("SA1", .F.)
+        SA1->A1_XUSRINC := RetCodUsr()
+        SA1->A1_MSBLQL := "1"
+    MsUnlock()
+ENDIF
+
+RestArea(aArea)
+
+Return 

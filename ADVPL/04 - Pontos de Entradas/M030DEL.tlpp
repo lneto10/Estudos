@@ -1,0 +1,34 @@
+#INCLUDE 'Protheus.ch'
+
+
+/*/{Protheus.doc} M030DEL
+description Ponto de entrada para validação na exclusão do cliente, checar se o cliente é PJ.
+@type function
+@version  
+@author luiz.neto
+@since 11/06/2022
+@return variant, return_description
+/*/
+User Function M030DEL() 
+Private aArea := GetArea()
+Private lRet := .T.
+
+
+Consulta()
+
+
+
+RETURN
+
+
+Static Function Consulta()
+
+If SA1->A1_PESSOA = "J"
+    lRet := .F.
+    Alert ("Nao é possível excluir o cliente. O cliente é pessoa juridica")
+
+Endif
+
+RestArea(aArea)
+
+Return (lRet)
