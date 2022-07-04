@@ -99,7 +99,7 @@ Private cEstCivil  := aEstCivil[1]
 Private oComboEstCivil 
 
 Private oGroupPet
-Private aPet  := {"Sim", "Não"}
+Private aPet  := {"Sim", "Nao"}
 Private oRadioPet
 Private nPet := 2
 
@@ -256,9 +256,9 @@ oBmpConsultar:lAutoSize := .T.
 oBmpExcluir := TBitmap():New(220,210,142,142,,"C:\TOTVS25\protheus_data\system\excluirprotheuzeiro.bmp",.T.,oDlg1,{||Alert(DeletarSZ1())},,.F.,.F.,,,.F.,,.T.,,.F.)
 oBmpExcluir:lAutoSize := .T.
 
-oBmpLimparTela := TBitmap():New(220,280,142,142,,"C:\TOTVS25\protheus_data\system\limpartela.bmp",.T.,oDlg1,{||Alert(DeletarSZ1())},,.F.,.F.,,,.F.,,.T.,,.F.)
+oBmpLimparTela := TBitmap():New(220,290,142,142,,"C:\TOTVS25\protheus_data\system\limpartela.bmp",.T.,oDlg1,{||Alert(DeletarSZ1())},,.F.,.F.,,,.F.,,.T.,,.F.)
 oBmpLimparTela:lAutoSize := .T.
-oBmpSair := TBitmap():New(220,360,142,142,,"C:\TOTVS25\protheus_data\system\sair.bmp",.T.,oDlg1,{||Alert(DeletarSZ1())},,.F.,.F.,,,.F.,,.T.,,.F.)
+oBmpSair := TBitmap():New(220,370,142,142,,"C:\TOTVS25\protheus_data\system\sair.bmp",.T.,oDlg1,{||Alert(oDlg1:END())},,.F.,.F.,,,.F.,,.T.,,.F.)
 oBmpSair:lAutoSize := .T.
 
 oDlg1:Activate (,,,.T.)
@@ -327,10 +327,7 @@ Static Function BuscarSZ1()
       DbSelectArea ("SZ1")
       DbSetOrder (1)
 
-      IF Empty(cGetNome) .OR. Empty(cGetNomeReduz) .OR. Empty(cGetDatNasc) .OR. Empty(cGetDDDCel) .OR. Empty(cGetCel) .OR.  Empty(cGetCPF)
-
-            Alert ("Existem campos obrigatorios nao preenchidos","Atencao")
-      else 
+      
       If DbSeek (xFilial("SZ1")+cGetCodigo)
         MsgInfo ("Cadastro Localizado","Sucesso")
         // Dados cadastrais    
@@ -364,7 +361,8 @@ Static Function BuscarSZ1()
       else 
             Alert("Cadastro nao localizado","Erro!")
       ENDIF
-      ENDIF
+      
+
   
 DbCloseArea()
     
