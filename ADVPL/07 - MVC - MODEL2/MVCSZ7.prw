@@ -15,11 +15,18 @@ Local aArea     := GetArea()
 passando para o oBrowse a possibilidade de executar todos os métodos da classe*/
 Local oBrowse   := FwmBrowse():New() 
 oBrowse:SetAlias("SZ7")
-oBrose:SetDescription("Solicitação de Compra")
+oBrowse:SetDescription("Solicitação de Compra")
 oBrowse:Activate()
 RestArea(aArea)
     
 Return 
+
+
+Static Function MenuDef()
+Local aRotina := FwMvcMenu("MVCSZ7")
+
+
+Return aRotina
 /*Static function responsavel pela criação do modelo de dados
 https://tdn.totvs.com/display/framework/FWFormModelStruct
 https://tdn.totvs.com/display/framework/FWFormStruct
@@ -28,15 +35,21 @@ https://tdn.totvs.com/display/framework/FWBuildFeature
 https://tdn.totvs.com/display/framework/FWFormGridModel*/
 
 Static Function ModelDef()
-//Objeto responsavel pela criação temporária do cabeçalho 
-Local oStCabec := FWFormModelStruct():New()
-//Estrutura responsavel pelos itens 
-Local oStItens := FwFormStruct(1,"SZ7")
-/*Objeto principal do desenvolvimento em MVC MODELO 2, ele traz as caracteristicas do dicionario de dados
- bem como é o responsável pela estrutura de tabelas, campos e registros */
-Local oModel   := MPFormModel ("MVCSZ7M",,,,)
-//Criação da tabela temporaria que será utilizado no cabeçalho 
+//Objeto responsável pela CRIAÇÃO da estrutura TEMPORÁRIA do cabeçalho 
+Local oStCabec      := FWFormModelStruct():New()
+
+//Objeto responsável pela estrutura dos itens
+Local oStItens      := FwFormStruct(1,"SZ7") //1 para model 2 para view
+
+
+
+/*Objeto principal do desenvolvimento em MVC MODELO2, ele traz as características do dicionário de dados
+bem como é o responsável pela estrutura de tabelas, campos e registros*/
+Local oModel        := MPFormModel():New("MVCSZ7m",/*bPre*/, /*bPos*/, /*bCommit*/,/*bCancel*/)
+
+//Criação da tabela temporária que será utilizada no cabeçalho
 oStCabec:AddTable("SZ7",{"Z7_FILIAL","Z7_NUM","Z7_ITEM"},"Cabeçalho SZ7")
+
 //Criação dos campos da tabela temporária
 oStCabec:AddField(;
     "Filial",;                                                                                  // [01]  C   Titulo do campo
@@ -53,6 +66,7 @@ oStCabec:AddField(;
     .T.,;                                                                                       // [12]  L   Indica se trata-se de um campo chave
     .F.,;                                                                                       // [13]  L   Indica se o campo pode receber valor em uma operação de update.
     .F.)                                                                                        // [14]  L   Indica se o campo é virtual
+
 oStCabec:AddField(;
     "Pedido",;                                                                                  // [01]  C   Titulo do campo
     "Pedido",;                                                                                  // [02]  C   ToolTip do campo
@@ -68,25 +82,28 @@ oStCabec:AddField(;
     .T.,;                                                                                       // [12]  L   Indica se trata-se de um campo chave
     .F.,;                                                                                       // [13]  L   Indica se o campo pode receber valor em uma operação de update.
     .F.)                                                                                        // [14]  L   Indica se o campo é virtual
+
 oStCabec:AddField(;
-    "Emissao",;                                                                                    // [01]  C   Titulo do campo
-    "Emissao",;                                                                                     // [02]  C   ToolTip do campo
-    "Z7_EMISSAO",;                                                                                  // [03]  C   Id do Field
-    "D",;                                                                                           // [04]  C   Tipo do campo
-    TamSX3("Z7_EMISSAO")[1],;                                                                       // [05]  N   Tamanho do campo
-    0,;                                                                                             // [06]  N   Decimal do campo
-    Nil,;                                                                                           // [07]  B   Code-block de validação do campo
-    Nil,;                                                                                           // [08]  B   Code-block de validação When do campo
-    {},;                                                                                            // [09]  A   Lista de valores permitido do campo
-    .T.,;                                                                                           // [10]  L   Indica se o campo tem preenchimento obrigatório
-    FwBuildFeature( STRUCT_FEATURE_INIPAD, "Iif(!INCLUI,SZ7->Z7_EMISSAO,dDataBase)" ),;             // [11]  B   Code-block de inicializacao do campo
-    .T.,;                                                                                           // [12]  L   Indica se trata-se de um campo chave
-    .F.,;                                                                                           // [13]  L   Indica se o campo pode receber valor em uma operação de update.
-    .F.)                                                                                            // [14]  L   Indica se o campo é virtual
+    "Emissao",;                                                                     // [01]  C   Titulo do campo
+    "Emissao",;                                                                     // [02]  C   ToolTip do campo
+    "Z7_EMISSAO",;                                                                  // [03]  C   Id do Field
+    "D",;                                                                           // [04]  C   Tipo do campo
+    TamSX3("Z7_EMISSAO")[1],;                                                       // [05]  N   Tamanho do campo
+    0,;                                                                             // [06]  N   Decimal do campo
+    Nil,;                                                                           // [07]  B   Code-block de validação do campo
+    Nil,;                                                                           // [08]  B   Code-block de validação When do campo
+    {},;                                                                            // [09]  A   Lista de valores permitido do campo
+    .T.,;                                                                           // [10]  L   Indica se o campo tem preenchimento obrigatório
+    FwBuildFeature( STRUCT_FEATURE_INIPAD, "Iif(!INCLUI,SZ7->Z7_EMISSAO,dDataBase)" ),;    // [11]  B   Code-block de inicializacao do campo
+    .T.,;                                                                           // [12]  L   Indica se trata-se de um campo chave
+    .F.,;                                                                           // [13]  L   Indica se o campo pode receber valor em uma operação de update.
+    .F.)                                                                            // [14]  L   Indica se o campo é virtual
+
+
 oStCabec:AddField(;
-    "Fornecedor",;                                                                                  // [01]  C   Titulo do campo
-    "Fornecedor",;                                                                                  // [02]  C   ToolTip do campo
-    "Z7_FORNECE",;                                                                      // [03]  C   Id do Field
+    "Fornecedor",;                                                              // [01]  C   Titulo do campo
+    "Fornecedor",;                                                              // [02]  C   ToolTip do campo
+    "Z7_FORNECE",;                                                              // [03]  C   Id do Field
     "C",;                                                                       // [04]  C   Tipo do campo
     TamSX3("Z7_FORNECE")[1],;                                                   // [05]  N   Tamanho do campo
     0,;                                                                         // [06]  N   Decimal do campo
@@ -98,6 +115,7 @@ oStCabec:AddField(;
     .F.,;                                                                       // [12]  L   Indica se trata-se de um campo chave
     .F.,;                                                                       // [13]  L   Indica se o campo pode receber valor em uma operação de update.
     .F.)                                                                        // [14]  L   Indica se o campo é virtual
+
 oStCabec:AddField(;
     "Loja",;                                                                      // [01]  C   Titulo do campo
     "Loja",;                                                                      // [02]  C   ToolTip do campo
@@ -113,6 +131,7 @@ oStCabec:AddField(;
     .F.,;                                                                         // [12]  L   Indica se trata-se de um campo chave
     .F.,;                                                                         // [13]  L   Indica se o campo pode receber valor em uma operação de update.
     .F.)                                                                          // [14]  L   Indica se o campo é virtual
+
 oStCabec:AddField(;
     "Usuario",;                                                                     // [01]  C   Titulo do campo
     "Usuario",;                                                                     // [02]  C   ToolTip do campo
@@ -127,37 +146,47 @@ oStCabec:AddField(;
     FwBuildFeature( STRUCT_FEATURE_INIPAD, "Iif(!INCLUI,SZ7->Z7_USER,__cuserid)" ),;// [11]  B   Code-block de inicializacao do campo
     .F.,;                                                                           // [12]  L   Indica se trata-se de um campo chave
     .F.,;                                                                           // [13]  L   Indica se o campo pode receber valor em uma operação de update.
-    .F.)
-    //Tratar a estrutura dos itens, que serão utilizados no GRID da aplicação. 
-    //Modificando inicializadores padrão
-    oStItens:SetProperty("Z7_NUM",      MODEL_FIELD_INIT,FwBuildFeature(STRUCT_FEATURE_INIPAD,'"*"'))
-    oStItens:SetProperty("Z7_USER",     MODEL_FIELD_INIT,FwBuildFeature(STRUCT_FEATURE_INIPAD,'"__cUserId"'))
-    oStItens:SetProperty("Z7_EMISSAO",  MODEL_FIELD_INIT,FwBuildFeature(STRUCT_FEATURE_INIPAD,'"dDatabase"'))
-    oStItens:SetProperty("Z7_FORNECE",  MODEL_FIELD_INIT,FwBuildFeature(STRUCT_FEATURE_INIPAD,'"*"'))
-    oStItens:SetProperty("Z7_LOJA",     MODEL_FIELD_INIT,FwBuildFeature(STRUCT_FEATURE_INIPAD,'"*"'))
+    .F.)                                                                            // [14]  L   Indica se o campo é virtual
 
+//Agora vamos tratar a estrutura dos Itens, que serão utilizados no Grid da aplicação
 
-/* A partir daqui é feito a união das estruturas, vinculando cabeçalho com itens 
-e também a vinculação da estrutura de dados dos itens ao modelo*/
+//Modificando Inicializadores Padrao,  para não dar mensagem de colunas vazias
+oStItens:SetProperty("Z7_NUM",      MODEL_FIELD_INIT, FwBuildFeature(STRUCT_FEATURE_INIPAD, '"*"'))
+oStItens:SetProperty("Z7_USER",     MODEL_FIELD_INIT, FwBuildFeature(STRUCT_FEATURE_INIPAD, '__cUserId')) //Trazer o usuário automatico
+oStItens:SetProperty("Z7_EMISSAO",  MODEL_FIELD_INIT, FwBuildFeature(STRUCT_FEATURE_INIPAD, 'dDatabase')) //Trazer a data automática
+oStItens:SetProperty("Z7_FORNECE",  MODEL_FIELD_INIT, FwBuildFeature(STRUCT_FEATURE_INIPAD, '"*"'))
+oStItens:SetProperty("Z7_LOJA",     MODEL_FIELD_INIT, FwBuildFeature(STRUCT_FEATURE_INIPAD, '"*"'))
 
-oModel:AddFields("SZ7MASTER",,oStCabec) // Realizado a vinculacao com o oStCabec 
+/*A partir de agora, eu faço a união das estruturas, vinculando o cabeçalho com os itens
+também faço a vinculação da Estrutura de dados dos itens, ao modelo
+*/
+
+oModel:AddFields("SZ7MASTER",,oStCabec) //Faço a vinculação com o oStCabe(cabeçalho e itens temporários)
 oModel:AddGrid("SZ7DETAIL","SZ7MASTER",oStItens,,,,,)
 
-oModel:SetRelation("SZ7DETAIL",{{"Z7_FILIAL","'Iif(!INCLUI, SZ7->Z7_FILIAL, FwxFilial('SZ7'))'"},{"Z7_NUM","SZ7_NUM"}},SZ7->(IndexKey(1)))
 
+//Seto a relação entre cabeçaho e item, neste ponto, eu digo através de qual/quais campo(s) o grid está vinculado com o cabeçalho
+aRelations := {}
+aAdd(aRelations,{"Z7_FILIAL",'Iif(!INCLUI, SZ7->Z7_FILIAL, FWxFilial("SZ7"))'})
+aAdd(aRelations,{"Z7_NUM","SZ7->Z7_NUM"})
+oModel:SetRelation("SZ7DETAIL",aRelations,SZ7->(IndexKey(1)))
+
+oModel:SetRelation('SZ7DETAIL',{{'Z7_FILIAL','Iif(!INCLUI, SZ7->Z7_FILIAL, FWxFilial("SZ7"))'},{'Z7_NUM','SZ7->Z7_NUM'}},SZ7->(IndexKey(1)))
+
+//Seto a chave primária, lembrando que, se ela estiver definida no X2_UNICO, faz valer o que está no X2_UNICO
 oModel:SetPrimaryKey({})
 
-oModel:GetModel("SZ7DETAIL"):SetUniqueline("Z7_ITEM") // Esse campo nao se repita 
+//É como se fosse a "chave primária do GRID"
+oModel:GetModel("SZ7DETAIL"):SetUniqueline({"Z7_ITEM"}) //o intuito é que este campo não se repita
 
-oModel:SetDescription("Modelo 2")
+//Setamos a descrição/título que aparecerá no cabeçalho 
+oModel:GetModel("SZ7MASTER"):SetDescription("CABEÇALHO DA SOLICITAÇÃO DE COMPRAS")
 
-oModel:GetModel("SZ7MASTER"):SetDescription("Cabeçalho da solicitação de compras") // Descricao do cabeçalho
-oModel:GetModel("SZ7DETAILS"):SetDescription("Itens da Solicitação de Compras") // Descricao dos itens da solicitação
+//Setamos a descrição/título que aparecerá no GRID DE ITENS
+oModel:GetModel("SZ7DETAIL"):SetDescription("ITENS DA SOLICITAÇÃO DE COMPRAS")
 
-//Finalizamos a funcao oModel
-oModel:GetModel("SZ7MASTER"):SetUsedOldGrid(.T.) // Finaliza setando o modelo antigo de grid, que permite utilizar o aHeader e o aCols
-
-    
+//Finalizamos a função model
+oModel:GetModel("SZ7DETAIL"):SetUseOldGrid(.T.) //Finalizo setando o modelo antigo de Grid, que permite pegar aHeader e aCols
 
 Return oModel
 
@@ -269,7 +298,7 @@ oStCabec:AddField(;
     Nil) 
 
 
-oStItens:RemoveFild("Z7_NUM")
+oStItens:RemoveField("Z7_NUM")
 oStItens:RemoveField("Z7_EMISSAO")
 oStItens:RemoveField("Z7_FORNECE")
 oStItens:RemoveField("Z7_LOJA")
@@ -281,8 +310,8 @@ oView:SetModel(oModel)
 oView:AddField("VIEW_SZ7M",oStCabec,"SZ7MASTER")
 oView:AddGrid("VIEW_SZ7D",oStItens,"SZ7DETAIL")
 
-oView:CreateHorizontalBox("CABEC",40)
-oView:CreateHorizontalbox("GRID",30)
+oView:CreateHorizontalBox("CABEC",30)
+oView:CreateHorizontalbox("GRID",60)
 
 oView:SetOwnerView("VIEW_SZ7M","CABEC")
 oView:SetOwnerView("VIEW_SZ7D","GRID")
