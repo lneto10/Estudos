@@ -45,7 +45,10 @@ Local oStItens      := FwFormStruct(1,"SZ7") //1 para model 2 para view
 
 /*Objeto principal do desenvolvimento em MVC MODELO2, ele traz as características do dicionário de dados
 bem como é o responsável pela estrutura de tabelas, campos e registros*/
-Local oModel        := MPFormModel():New("MVCSZ7m",/*bPre*/, /*bPos*/, /*bCommit*/,/*bCancel*/)
+
+Local bVldCom       := {|| u_GrvSZ7()}
+
+Local oModel        := MPFormModel():New("MVCSZ7m",/*bPre*/, /*bPos*/, bVldCom,/*bCancel*/)
 
 //Criação da tabela temporária que será utilizada no cabeçalho
 oStCabec:AddTable("SZ7",{"Z7_FILIAL","Z7_NUM","Z7_ITEM"},"Cabeçalho SZ7")
@@ -324,3 +327,41 @@ oView:SetCloseonOk({|| .T.})
 
 
 Return oView
+
+
+User Function GrvSZ7()
+Local aArea := GetArea()
+
+//Captura o modelo ativo, no caso o objeto de modelo (oModel) que está sendo manipulado na aplicação
+Local oModel        := FwModelActive()
+Local oModelCabe    := oModel:GetModel("SZ7MASTER") // Criar modelo de dados com base no model geral que foi capturado 
+Local oModelItem    := oModel:GetModel("SZ7DETAIL") 
+
+//Realizando a captura dos dados do cabeçalho 
+Local cFilSz7       := oModelCabec:GetValue("Z7_FILIAL")      
+Local cNum          := oModelCabec:GetValue("Z7_NUM")
+Local cEmissao      := oModelCabec:GetValue("Z7_EMISSAO")
+Local cFornece      := oModelCabec:GetValue("Z7_FORNECE")
+Local cLoja         := oModelCabec:GetValue("Z7_LOJA")
+Local cUser         := oModelCabec:GetValue("Z7_USER")
+
+//Variaveis que irao faze a captura com base no aHeader e aCols 
+
+Local aHeaderAux    := oModelItem:aHeader
+Local aColsAux      := oModelItem:aCols 
+Local nPosItem      := aScan (aHeaderAux, {|x| AllTrim(x[2]) == "Z7_ITEM"})
+Local nPosProd      := aScan (aHeaderAux, {|x| AllTrim(x[2]) == "Z7_PRODUTO"})
+Local nPosQtd       := aScan (aHeaderAux, {|x| AllTrim(x[2]) == "Z7_QTD"})
+Local nPosPrc       := aScan (aHeaderAux, {|x| AllTrim(x[2]) == "Z7_PRC"})
+Local nPosTotal     := aScan (aHeaderAux, {|x| AllTrim(x[2]) == "Z7_TOTAL"})
+
+// Capturar a linha atual que o usuário está posicionado
+Local nLinhaAtu     := 0
+
+//Identificar qual o tipo de operacao que o usuario está fazendo (Inclusão/Alteração/Exclusão)
+Local cOption       := oModelCabec:GetOperation()
+
+
+
+RestArea(aArea)
+Return lRet 
