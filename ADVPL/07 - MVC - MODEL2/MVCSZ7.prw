@@ -2,7 +2,7 @@
 #Include 'FwMvcDef.ch'
 
 /*/{Protheus.doc} User Function MVCSZ7
-    Fun??o principal para tela de solicitacao de compras da empresa em MVC Model 2 
+    Função principal para tela de solicitacao de compras da empresa em MVC Model 2 
     @type  Function
     @author Luiz Neto
     @since 04/07/2022
@@ -35,15 +35,15 @@ https://tdn.totvs.com/display/framework/FWBuildFeature
 https://tdn.totvs.com/display/framework/FWFormGridModel*/
 
 Static Function ModelDef()
-//Objeto respons?vel pela CRIA??O da estrutura TEMPOR?RIA do cabe?alho 
+//Objeto respons?vel pela Criação da estrutura TEMPOR?RIA do cabe?alho 
 Local oStCabec      := FWFormModelStruct():New()
 
-//Objeto respons?vel pela estrutura dos itens
+//Objeto Responsável pela estrutura dos itens
 Local oStItens      := FwFormStruct(1,"SZ7") //1 para model 2 para view
 
 
 
-/*Objeto principal do desenvolvimento em MVC MODELO2, ele traz as caracter?sticas do dicion?rio de dados
+/*Objeto principal do desenvolvimento em MVC MODELO2, ele traz as caracter?sticas do dicionário de dados
 bem como ? o respons?vel pela estrutura de tabelas, campos e registros*/
 
 Local bVldCom       := {|| u_GrvSZ7()}
@@ -160,8 +160,8 @@ oStItens:SetProperty("Z7_EMISSAO",  MODEL_FIELD_INIT, FwBuildFeature(STRUCT_FEAT
 oStItens:SetProperty("Z7_FORNECE",  MODEL_FIELD_INIT, FwBuildFeature(STRUCT_FEATURE_INIPAD, '"*"'))
 oStItens:SetProperty("Z7_LOJA",     MODEL_FIELD_INIT, FwBuildFeature(STRUCT_FEATURE_INIPAD, '"*"'))
 
-/*A partir de agora, eu fa?o a uni?o das estruturas, vinculando o cabe?alho com os itens
-tamb?m fa?o a vincula??o da Estrutura de dados dos itens, ao modelo
+/*A partir de agora, eu faço a união das estruturas, vinculando o cabe?alho com os itens
+também faço a vinculação da Estrutura de dados dos itens, ao modelo
 */
 
 oModel:AddFields("SZ7MASTER",,oStCabec) //Fa?o a vincula??o com o oStCabe(cabe?alho e itens tempor?rios)
@@ -433,6 +433,14 @@ ElseIf cOption == MODEL_OPERATION_UPDATE
                 ENDIF
         ENDIF
     Next n
+ELSEIF cOption == MODEL_OPERATION_DELETE
+    SZ7->(DbSetOrder(1))
+    While !SZ7->(EOF()) .AND. SZ7->Z7_NUM == cNum .AND. SZ7->Z7_FILIAL == cFilSZ7
+        RecLock("SZ7",.F.)
+            DbDelete()
+        SZ7->(MsUnlock())
+    SZ7->(DbSkip())
+    ENDDO
 ENDIF
 
 RestArea(aArea)
