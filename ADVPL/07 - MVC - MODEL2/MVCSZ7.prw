@@ -2,7 +2,7 @@
 #Include 'FwMvcDef.ch'
 
 /*/{Protheus.doc} User Function MVCSZ7
-    Função principal para tela de solicitacao de compras da empresa em MVC Model 2 
+    Fun??o principal para tela de solicitacao de compras da empresa em MVC Model 2 
     @type  Function
     @author Luiz Neto
     @since 04/07/2022
@@ -15,7 +15,7 @@ Local aArea     := GetArea()
 passando para o oBrowse a possibilidade de executar todos os m?todos da classe*/
 Local oBrowse   := FwmBrowse():New() 
 oBrowse:SetAlias("SZ7")
-oBrowse:SetDescription("Solicitação de Compra")
+oBrowse:SetDescription("Solicita??o de Compra")
 oBrowse:Activate()
 RestArea(aArea)
     
@@ -35,20 +35,24 @@ https://tdn.totvs.com/display/framework/FWBuildFeature
 https://tdn.totvs.com/display/framework/FWFormGridModel*/
 
 Static Function ModelDef()
-//Objeto respons?vel pela Criação da estrutura TEMPOR?RIA do cabe?alho 
+//Objeto respons?vel pela Cria??o da estrutura TEMPOR?RIA do cabe?alho 
 Local oStCabec      := FWFormModelStruct():New()
 
-//Objeto Responsável pela estrutura dos itens
+//Objeto Respons?vel pela estrutura dos itens
 Local oStItens      := FwFormStruct(1,"SZ7") //1 para model 2 para view
 
+Local bVldPos       := {|| u_VldSZ7()}
 
 
-/*Objeto principal do desenvolvimento em MVC MODELO2, ele traz as caracter?sticas do dicionário de dados
+/*Objeto principal do desenvolvimento em MVC MODELO2, ele traz as caracter?sticas do dicion?rio de dados
 bem como ? o respons?vel pela estrutura de tabelas, campos e registros*/
 
 Local bVldCom       := {|| u_GrvSZ7()}
 
-Local oModel        := MPFormModel():New("MVCSZ7m",/*bPre*/, /*bPos*/, bVldCom,/*bCancel*/)
+Local oModel        := MPFormModel():New("MVCSZ7m",/*bPre*/, bVldPos, bVldCom,/*bCancel*/)
+Local aTrigQuant    := {}
+Local aTrigPreco    := {}
+
 
 //Cria??o da tabela tempor?ria que ser? utilizada no cabe?alho
 oStCabec:AddTable("SZ7",{"Z7_FILIAL","Z7_NUM","Z7_ITEM"},"Cabe?alho SZ7")
@@ -81,7 +85,7 @@ oStCabec:AddField(;
     Nil,;                                                                                       // [08]  B   Code-block de valida??o When do campo
     {},;                                                                                        // [09]  A   Lista de valores permitido do campo
     .F.,;                                                                                       // [10]  L   Indica se o campo tem preenchimento obrigat?rio
-    FwBuildFeature( STRUCT_FEATURE_INIPAD, "Iif(!INCLUI,SZ7->Z7_NUM,'')" ),;                    // [11]  B   Code-block de inicializacao do campo
+    FwBuildFeature( STRUCT_FEATURE_INIPAD, 'Iif(!INCLUI,SZ7->Z7_NUM,GetSxeNum("SZ7","Z7_NUM"))' ),;                    // [11]  B   Code-block de inicializacao do campo
     .T.,;                                                                                       // [12]  L   Indica se trata-se de um campo chave
     .F.,;                                                                                       // [13]  L   Indica se o campo pode receber valor em uma opera??o de update.
     .F.)                                                                                        // [14]  L   Indica se o campo ? virtual
@@ -160,12 +164,36 @@ oStItens:SetProperty("Z7_EMISSAO",  MODEL_FIELD_INIT, FwBuildFeature(STRUCT_FEAT
 oStItens:SetProperty("Z7_FORNECE",  MODEL_FIELD_INIT, FwBuildFeature(STRUCT_FEATURE_INIPAD, '"*"'))
 oStItens:SetProperty("Z7_LOJA",     MODEL_FIELD_INIT, FwBuildFeature(STRUCT_FEATURE_INIPAD, '"*"'))
 
-/*A partir de agora, eu faço a união das estruturas, vinculando o cabe?alho com os itens
-também faço a vinculação da Estrutura de dados dos itens, ao modelo
+aTrigQuant  := FwStrutTrigger(;
+"Z7_QUANT",;
+"Z7_TOTAL",;
+"M->Z7_QUANT * M->Z7_PRECO")
+
+aTrigPreco  := FwStrutTrigger(;
+"Z7_QUANT",;
+"Z7_TOTAL",;
+"M->Z7_QUANT * M->Z7_PRECO")
+
+// Adicionar a Trigger na estrutura de itens 
+oStItens:AddTrigger(;
+aTrigQuant[1],;
+aTrigQuant[2],;
+aTrigQuant[3],;
+aTrigQuant[4])
+
+oStItens:AddTrigger(;
+aTrigPreco[1],;
+aTrigPreco[2],;
+aTrigPreco[3],;
+aTrigPreco[4])
+
+/*A partir de agora, eu fa?o a uni?o das estruturas, vinculando o cabe?alho com os itens
+tamb?m fa?o a vincula??o da Estrutura de dados dos itens, ao modelo
 */
 
 oModel:AddFields("SZ7MASTER",,oStCabec) //Fa?o a vincula??o com o oStCabe(cabe?alho e itens tempor?rios)
 oModel:AddGrid("SZ7DETAIL","SZ7MASTER",oStItens,,,,,)
+
 
 
 //Seto a rela??o entre cabe?aho e item, neste ponto, eu digo atrav?s de qual/quais campo(s) o grid est? vinculado com o cabe?alho
@@ -210,7 +238,7 @@ oStCabec:AddField(;
     X3Picture("Z7_NUM"),;       // [07]  C   Picture
     Nil,;                       // [08]  B   Bloco de PictTre Var
     Nil,;                       // [09]  C   Consulta F3
-    Iif(INCLUI, .T., .F.),;    	// [10]  L   Indica se o campo ? alteravel
+    .F.,;    	                // [10]  L   Indica se o campo ? alteravel
     Nil,;                       // [11]  C   Pasta do campo
     Nil,;                       // [12]  C   Agrupamento do campo
     Nil,;                       // [13]  A   Lista de valores permitido do campo (Combo)
@@ -313,6 +341,8 @@ oView:SetModel(oModel)
 oView:AddField("VIEW_SZ7M",oStCabec,"SZ7MASTER")
 oView:AddGrid("VIEW_SZ7D",oStItens,"SZ7DETAIL")
 
+oView:AddIncrementField("SZ7DETAIL","Z7_ITEM") // incrementa o campo ITEM 
+
 oView:CreateHorizontalBox("CABEC",30)
 oView:CreateHorizontalbox("GRID",60)
 
@@ -328,7 +358,7 @@ oView:SetCloseonOk({|| .T.})
 
 Return oView
 
-
+// User function responsável pela manipulação dos dados na SZ7 
 User Function GrvSZ7()
 Local aArea := GetArea()
 Local lRet  := .T.
@@ -367,7 +397,7 @@ SZ7->(DbSetOrder(1))
 
 
 If cOption == MODEL_OPERATION_INSERT
- //Antes de inserir, verificar se a linha está deletada 
+ //Antes de inserir, verificar se a linha est? deletada 
     For nLinAtu := 1 to len(aColsAux)
         If !aColsAux[nLinAtu][len(aHeaderAux)+1] 
             RecLock("SZ7", .T.)
@@ -392,7 +422,7 @@ If cOption == MODEL_OPERATION_INSERT
 ElseIf cOption == MODEL_OPERATION_UPDATE
 
     For nLinAtu := 1 to len(aColsAux)
-        If aColsAux[nLinAtu][len(aHeaderAux)+1] // Verifica se a linha está deletada
+        If aColsAux[nLinAtu][len(aHeaderAux)+1] // Verifica se a linha est? deletada
             SZ7->(DbSetOrder(2)) // realiza a busca por filial+numeropedido+item
             If SZ7->(DBSeek(cFilSZ7+cNum+aColsAux[nLinAtu,nPosItem])) // Localiza no banco para realizar o delet
                 RecLock("SZ7",.F.)
@@ -441,6 +471,29 @@ ELSEIF cOption == MODEL_OPERATION_DELETE
         SZ7->(MsUnlock())
     SZ7->(DbSkip())
     ENDDO
+ENDIF
+
+RestArea(aArea)
+Return lRet 
+
+
+
+User Function VldSz7()
+Local lRet := .T. // Variavel irá retornar como TRUE se o numero do pedido não existir na tabela 
+Local aArea := GetArea() 
+Local oModel         := FwModelActive()
+Local oModelCabec    := oModel:GetModel("SZ7MASTER") // Criar modelo de dados com base no model geral que foi capturado 
+Local cFilSz7        := oModelCabec:GetValue("Z7_FILIAL")      
+Local cNum           := oModelCabec:GetValue("Z7_NUM")
+Local cOption        := oModelCabec:GetOperation()
+
+IF cOption == MODEL_OPERATION_INSERT 
+    DBSelectArea("SZ7")
+    DBSetOrder(1)
+    IF SZ7->(DBSeek(cFilSZ7+cNum))
+        lRet := .F. 
+        Help (Nil,Nil, "Numero já existente",NIl,"O numero do pedido informado ja existe na base de dados",1,0,NIL, NIL,NIL,NIL,NIL,{"Informe o numero de um pedido diferente"})
+    EndIf
 ENDIF
 
 RestArea(aArea)
