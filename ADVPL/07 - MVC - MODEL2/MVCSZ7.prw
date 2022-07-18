@@ -164,15 +164,17 @@ oStItens:SetProperty("Z7_EMISSAO",  MODEL_FIELD_INIT, FwBuildFeature(STRUCT_FEAT
 oStItens:SetProperty("Z7_FORNECE",  MODEL_FIELD_INIT, FwBuildFeature(STRUCT_FEATURE_INIPAD, '"*"'))
 oStItens:SetProperty("Z7_LOJA",     MODEL_FIELD_INIT, FwBuildFeature(STRUCT_FEATURE_INIPAD, '"*"'))
 
-aTrigQuant  := FwStrutTrigger(;
-"Z7_QUANT",;
-"Z7_TOTAL",;
-"M->Z7_QUANT * M->Z7_PRECO")
+aTrigQuant  := FwStruTrigger(;
+"Z7_QUANT",; // Campo que ira disparar o gatilho
+"Z7_TOTAL",; // Campo que ira receber o conteudo disparado
+"M->Z7_QUANT * M->Z7_PRECO",;
+.F.) // Conteudo que ira para o campo Z7_TOTAL
 
-aTrigPreco  := FwStrutTrigger(;
-"Z7_QUANT",;
+aTrigPreco  := FwStruTrigger(;
+"Z7_PRECO",;
 "Z7_TOTAL",;
-"M->Z7_QUANT * M->Z7_PRECO")
+"M->Z7_QUANT * M->Z7_PRECO",;
+.F.)
 
 // Adicionar a Trigger na estrutura de itens 
 oStItens:AddTrigger(;
@@ -193,6 +195,13 @@ tamb?m fa?o a vincula??o da Estrutura de dados dos itens, ao modelo
 
 oModel:AddFields("SZ7MASTER",,oStCabec) //Fa?o a vincula??o com o oStCabe(cabe?alho e itens tempor?rios)
 oModel:AddGrid("SZ7DETAIL","SZ7MASTER",oStItens,,,,,)
+
+/* Adicionando o Model de totalizadores a aplicação */
+
+oModel:AddCalc ("CALCTOTAL","SZ7MASTER","SZ7DETAIL","Z7_PRODUTO","QTDITENS","COUNT",,,"Quantidade de Itens")
+oModel:AddCalc ("CALCTOTAL","SZ7MASTER","SZ7DETAIL","Z7_QUANT","QTDTOTAL","SUM",,,"Soma dos Itens")
+oModel:AddCalc ("CALCTOTAL","SZ7MASTER","SZ7DETAIL","Z7_TOTAL","PRCTOTAL","SUM",,,"Soma da compra")
+
 
 
 
@@ -224,9 +233,11 @@ Return oModel
 
 Static Function ViewDef()
 Local oView     := Nil
-Local oModel    := FwLoadModel("MVCSZ7")
-Local oStCabec  := FwFormViewStruct():New()
+Local oModel    := FwLoadModel("MVCSZ7") // Realiza o load do Model referente a função/fonte MVCSZ7
+Local oStCabec  := FwFormViewStruct():New() 
 Local oStItens  := FwFormStruct (2,"SZ7")
+//Criar estrutura de dados dos totalizadores
+Local oStTotais := FwCalcStruct (oModel:GeTModel("CALCTOTAL"))
 
 oStCabec:AddField(;
     "Z7_NUM",;                  // [01]  C   Nome do Campo
@@ -335,22 +346,30 @@ oStItens:RemoveField("Z7_FORNECE")
 oStItens:RemoveField("Z7_LOJA")
 oStItens:RemoveField("Z7_USER")
 
+oStItens:SetProperty("Z7_ITEM",         MVC_VIEW_CANCHANGE, .F.) // Bloqueando a edicao desses campos pois sao preenchidos automaticamente
+oStItens:SetProperty("Z7_TOTAL",        MVC_VIEW_CANCHANGE, .F.) // Bloqueando a edicao desses campos pois sao preenchidos automaticamente
+
 oView   := FwFormView():New()
 oView:SetModel(oModel)
 
-oView:AddField("VIEW_SZ7M",oStCabec,"SZ7MASTER")
-oView:AddGrid("VIEW_SZ7D",oStItens,"SZ7DETAIL")
+oView:AddField("VIEW_SZ7M",oStCabec,"SZ7MASTER") // Cabeçalho/master
+oView:AddGrid("VIEW_SZ7D",oStItens,"SZ7DETAIL") // itens/grid
+
+oView:AddField("VIEW_TOTAL",oStTotais,"CALCTOTAL") // cria view dos totalizadores
 
 oView:AddIncrementField("SZ7DETAIL","Z7_ITEM") // incrementa o campo ITEM 
 
-oView:CreateHorizontalBox("CABEC",30)
-oView:CreateHorizontalbox("GRID",60)
+oView:CreateHorizontalBox("CABEC",20)  // percentual de ocupação da tela de cabeçalho
+oView:CreateHorizontalbox("GRID",50)   // percentual de ocupação da tela do grid 
+oView:CreateHorizontalBox("TOTAL",30)  // Percentual de ocupação da tela de totalizador
 
-oView:SetOwnerView("VIEW_SZ7M","CABEC")
-oView:SetOwnerView("VIEW_SZ7D","GRID")
+oView:SetOwnerView("VIEW_SZ7M","CABEC") // Rekaciona o view do master com o percentual da tela de cabeçalho
+oView:SetOwnerView("VIEW_SZ7D","GRID") // relaciona o view do master com o percentual da tela do grid 
+oView:SetOwnerView("VIEW_TOTAL","TOTAL") // relaciona o view do master com o percentual da tela do total
 
-oView:EnableTitleView("VIEW_SZ7M","Cabe?alho da solicita??o")
-oView:EnableTitleView("VIEW_SZ7D","Itens de solicita??o")
+oView:EnableTitleView("VIEW_SZ7M","Cabçalho da solicitação")
+oView:EnableTitleView("VIEW_SZ7D","Itens de solicitação")
+oView:EnableTitleView("VIEW_TOTAL","Resumo da solicitação de compras ")
 
 oView:SetCloseonOk({|| .T.})
 
