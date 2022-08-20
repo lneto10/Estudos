@@ -73,14 +73,14 @@ Return aMenu
 Static Function ModelDef()
 Local oModel        := MPFormModel():New("MVCZ23M",,,,)
 Local oStPaiZ2      := FwFormStruct (1,"SZ2")  
-Local oSTFilhoZ3    := FwFormStruct (2,"SZ3")
+Local oSTFilhoZ3    := FwFormStruct (1,"SZ3")
 
 
 
 oStFilhoZ3:SetProperty("Z3_CHAMADO",MODEL_FIELD_INIT,FwBuildFeature(STRUCT_FEATURE_INIPAD, "SZ2->Z2_COD"))
 
 oModel:AddFields("SZ2MASTER",,oStPaiZ2)
-oModel:AddGrid("SZ3DETAIL","SZ2MASTER",oSTFilho3,,,,,)
+oModel:AddGrid("SZ3DETAIL","SZ2MASTER",oSTFilhoZ3,,,,,)
 
 //Relaciona o cabeçalho com os itens, atraves dos campos FILIAL e codigo do chamado
 oModel:SetRelation("SZ3DETAIL",{{"Z3_FILIAL","xFilial('SZ2')"},{"Z3_CHAMADO","Z2_COD"}},SZ3->(IndexKey(1)))
