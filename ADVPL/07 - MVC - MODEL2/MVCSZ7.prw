@@ -498,22 +498,22 @@ Return lRet
 
 
 User Function VldSz7()
-Local lRet := .T. // Variavel irá retornar como TRUE se o numero do pedido não existir na tabela 
-Local aArea := GetArea() 
-Local oModel         := FwModelActive()
-Local oModelCabec    := oModel:GetModel("SZ7MASTER") // Criar modelo de dados com base no model geral que foi capturado 
-Local cFilSz7        := oModelCabec:GetValue("Z7_FILIAL")      
-Local cNum           := oModelCabec:GetValue("Z7_NUM")
-Local cOption        := oModelCabec:GetOperation()
+    Local lRet := .T. // Variavel irá retornar como TRUE se o numero do pedido não existir na tabela 
+    Local aArea := GetArea() 
+    Local oModel         := FwModelActive()
+    Local oModelCabec    := oModel:GetModel("SZ7MASTER") // Criar modelo de dados com base no model geral que foi capturado 
+    Local cFilSz7        := oModelCabec:GetValue("Z7_FILIAL")      
+    Local cNum           := oModelCabec:GetValue("Z7_NUM")
+    Local cOption        := oModelCabec:GetOperation()
 
-IF cOption == MODEL_OPERATION_INSERT 
-    DBSelectArea("SZ7")
-    DBSetOrder(1)
-    IF SZ7->(DBSeek(cFilSZ7+cNum))
-        lRet := .F. 
-        Help (Nil,Nil, "Numero já existente",NIl,"O numero do pedido informado ja existe na base de dados",1,0,NIL, NIL,NIL,NIL,NIL,{"Informe o numero de um pedido diferente"})
-    EndIf
-ENDIF
+    IF cOption == MODEL_OPERATION_INSERT 
+        DBSelectArea("SZ7")
+        DBSetOrder(1)
+        IF SZ7->(DBSeek(cFilSZ7+cNum))
+            lRet := .F. 
+            Help (Nil,Nil, "Numero já existente",NIl,"O numero do pedido informado ja existe na base de dados",1,0,NIL, NIL,NIL,NIL,NIL,{"Informe o numero de um pedido diferente"})
+        EndIf
+    ENDIF
 
-RestArea(aArea)
+    RestArea(aArea)
 Return lRet 
