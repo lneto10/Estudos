@@ -1,7 +1,7 @@
 #include 'Protheus.ch'
 
 
-User /*/{Protheus.doc} Item
+User Function Item /*/{Protheus.doc} Item
     Ponto de entrada usado para modificar o cadastro de produtos, quando estiver em MVC 
     @type  Function
     @author Luiz Neto
@@ -12,7 +12,7 @@ User /*/{Protheus.doc} Item
     (examples)
     @see (links_or_references)
     /*/
-Function Item
+
 
 /*Parametro obrigatório nos PEs em MVC, pois trazem consigo informações 
 importantes sobre o estado e ponto de execuçãõ da rotina */
