@@ -2,7 +2,11 @@
 #Include  'APWEBSRV.CH'
 #Include 'TOPCONN.ch'
 
-
+/* 
+    WEBSERVICE responsavel por listar os clientes de acordo com os parametros informados 
+    @author Luiz Neto
+    @since 07/12/2022
+*/
 WSSTRUCT STClientes 
     WSDATA clienteCODIGO        AS STRING OPTIONAL
     WSDATA clienteDESCRICAO     AS STRING OPTIONAL
