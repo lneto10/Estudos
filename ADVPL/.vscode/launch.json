@@ -9,13 +9,17 @@
 			"cwb": "${workspaceFolder}",
 			"smartclientBin": "C:/TOTVS25/Protheus/bin/smartclient/smartclient.exe",
 			"isMultiSession": true,
-			"enableTableSync": true
+			"enableTableSync": true,
+			"enableMultiThread": true
 		}
 	],
 	"lastPrograms": [
 		{
 			"label": "SIGAMDI"
+		},
+		{
+			"label": "xxxx"
 		}
 	],
-	"lastProgramExecuted": "SIGAMDI"
+	"lastProgramExecuted": "xxxx"
 }
