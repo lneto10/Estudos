@@ -92,3 +92,74 @@ Local cGrupo  := ""
 RestArea(aAreA)
 
 RETURN (lRet)
+
+// Construcao do metodo POST - Inserir Produto 
+
+WSMETHOD POST inserirproduto WSRECEIVE WSREST WSRESTPROD
+    Local lRet := .T. 
+
+    Local aArea := GetArea()
+
+    //Instancia a classe Json Object
+    Local oJson := JsonObject():New() 
+
+
+    Local oReturn 
+
+    //Carrega os dados vindos do Body da requisicao que estará em Json
+    oJson:FromJson(Self:GetContent()) //GetContent - Pega o conteúdo do Json
+
+    DbSelectArea("SB1")
+    SB1->(DBSetOrder(1))
+    //Verificar se já existe o código que está sendo inserido 
+    IF SB1->(DBSeek(xFilial("SB1")+AllTrim(oJson["produtos"]:GetJsonObject("prodcod")))) // Busca pelo codigo do produto informado no Json
+        SetRestFault(400,"Codigo do produto já existe")
+        lRet := .F.
+        Return (lRet)
+    ELSEIF Empty(AllTrim(oJson["produtos"]:GetJsonObject("prodcod")))
+        SetRestFault(401,"Codigo do produto está em branco")
+        lRet := .F.
+        Return (lRet)
+    ELSEIF Empty(AllTrim(oJson["produtos"]:GetJsonObject("prodesc")))
+        SetRestFault(402,"Descricao do produto está em branco")
+        lRet := .F.
+        Return (lRet)
+    ELSEIF Empty(AllTrim(oJson["produtos"]:GetJsonObject("produm")))
+        SetRestFault(403,"Unidade de medida do produto está em branco")
+        lRet := .F.
+        Return (lRet)
+    ELSEIF Empty(AllTrim(oJson["produtos"]:GetJsonObject("prodgrupo")))
+        SetRestFault(404,"Codigo do produto está em branco")
+        lRet := .F.
+        Return (lRet)
+    ELSEIF Empty(AllTrim(oJson["produtos"]:GetJsonObject("prodcod")))
+        SetRestFault(400,"Codigo do grupo está em branco")
+        lRet := .F.
+        Return (lRet)
+    ELSE 
+        RecLock("SB1",.T.)
+            SB1->B1_COD     := AllTrim(oJson["produtos"]:GetJsonObject("prodcod"))
+            SB1->B1_DESC    := AllTrim(oJson["produtos"]:GetJsonObject("prodesc"))
+            SB1->B1_TIPO    := AllTrim(oJson["produtos"]:GetJsonObject("prodtipo"))
+            SB1->B1_UM      := AllTrim(oJson["produtos"]:GetJsonObject("produm"))
+            SB1->B1_GRUPO   := AllTrim(oJson["produtos"]:GetJsonObject("prodgrupo"))
+            SB1->B1_MSBLQL  := "1"
+        SB1->(MsUnlock())
+
+        oReturn := JSonObject():New()
+        oReturn ["prodcod"] := oJson["produtos"]:GetJsonObject("prodcod")
+        oReturn ['prodesc'] := oJson["produtos"]:GetJsonObject("prodesc")
+        oReturn ["cRet"]    := "201 - Sucesso"
+        oReturn["cMessage"]:= "Registro incluido com sucesso no banco de dados. "
+
+        Self:SetStatus(201)
+        Self:ContentType(APPLICATION_JSON)
+        Self:SetResponse(FwJsonSerialize(oReturn)) // Serializa o objeto oReturn para JSON e retorno para o usuario
+    ENDIF
+
+
+
+    RestArea(aArea)
+    FreeObj(oJson)
+    FreeObj(oReturn)
+Return lRet
