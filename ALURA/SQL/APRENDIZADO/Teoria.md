@@ -1,3 +1,8 @@
+##### Anotações curso SQL Server Alura 
+
+
+#### Curso 1: Conhecendo o SQL Server 
+
 ### Entidades SQL
 
 ## Tables - Tabelas 
@@ -36,3 +41,37 @@ Chaves primárias não são obrigatórias. Tabelas podem ser criadas sem a defin
 # Trigger 
 - Comandos de bancos de dados quando alguma coisa acontecer. 
 - Os comandos podem ser em SQL ou Transact SQL. 
+
+
+# Comandos SQL
+- Criar banco de dados: Create database nome_do_banco; 
+- Criar banco de dados em diretório diferente: 
+
+CREATE DATABASE SUCOS_VENDAS_02 -- NOME DO BANCO 
+ON (NAME = 'SUCOS_VENDAS.DAT' -- NOME INTERNO DO BANCO
+	FILENAME = 'C:\TEMP2\SUCOS_VENDAS_02.MDF', -- DIRETÓRIO EM QUE O ARQUIVO ESTARÁ SALVO
+	SIZE = 10MB -- TAMANHO INICIAL DO BD 
+	MAXSIZE = 50MB, -- TAMANHO FINAL DO BD
+	FILEGROWTH = 5MB) -- TAXA DE CRESCIMENTO DO BD
+LOG ON -- ARQUIVO DE LOG
+	(NAME = 'SUCOS_VENDAS.LOG' -- NOME INTERNO DO BANCO
+	FILENAME = 'C:\TEMP2\SUCOS_VENDAS_02.LDF', -- DIRETÓRIO EM QUE O ARQUIVO ESTARÁ SALVO
+	SIZE = 10MB -- TAMANHO INICIAL DO BD 
+	MAXSIZE = 50MB, -- TAMANHO FINAL DO BD
+	FILEGROWTH = 5MB); -- TAXA DE CRESCIMENTO DO BD
+
+- Quando for criar o banco de dados com o assistente de criação, é possível clicar na opção SCRIPT e ter acesso aos comandos que foram executados. 
+
+- Para deletar um banco de dados, é utilizado o comando: DROP DATABASE nome_do_banco;
+
+# Tipos de dados aceitos pelo SQL Server
+
+- Números Exatos
+- Números aproximados
+- Data e Hora
+- Cadeia de Caracteres
+- Cadeia de caracteres unicode
+- Cadeia de caracterres binários
+- Outros tipos de dados 
+
+
