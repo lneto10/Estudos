@@ -12,6 +12,7 @@ WSRESTFUL WSRESTCLI DESCRIPTION "Serviço REST para integração de Clientes | SA1"
 
 WSDATA CODCLIENTEDE AS STRING
 WSDATA CODCLIENTEATE AS STRING
+WSDATA CODLOJA       AS STRING
 
 //Declaracao dos metodos 
 
@@ -96,3 +97,162 @@ WSMETHOD GET buscarcliente WSRECEIVE CODCLIENTEDE, CODCLIENTEATE WSREST WSRESTCL
     FreeObj(oJson)
 Return lRet
 
+// Criando o método POST/Incluir Clientes 
+
+WSMETHOD POST incluircliente WSRECEIVE WSREST WSRESTCLI
+
+Local lRet      := .T.
+Local aArea     := GetArea()
+Local oJson     := JsonObject():New()
+Local oReturn   := JsonObject():New()
+
+
+oJson:FromJson(Self:GetContent())
+
+//Verificar se o codigo e loja estão preenchidos
+
+IF Empty(oJson["clientes"]:GetJsonObject("clicodigo")) .OR. Empty(oJson["clientes"]:GetJsonObject("cliloja"))
+
+    SetRestFault(400,EncodeUtf8('Codigo ou loja do cliente estão em branco'))
+    lRet := .F.
+    Return (lRet)
+
+ELSE 
+    DbSelectArea("SA1")
+    DbSetOrder(1)
+    IF SA1->(DBSeek(xFilial("SA1")+oJson["clientes"]:GetJsonObject("clicodigo")+oJson["clientes"]:GetJsonObject("cliloja")))
+        SetRestFault(401,EncodeUtf8('Codigo ou loja do cliente já existe'))
+        lRet := .F.
+        Return (lRet)
+    ELSE
+        RecLock("SA1",.T.)
+            SA1->A1_COD     := oJSon["clientes"]:GetJsonObject("clicodigo")
+            SA1->A1_LOJA    := oJSon["clientes"]:GetJsonObject("cliloja")
+            SA1->A1_NOME    := oJSon["clientes"]:GetJsonObject("clinome")
+            SA1->A1_NREDUZ  := oJSon["clientes"]:GetJsonObject("clinomereduz")
+            SA1->A1_END     := oJSon["clientes"]:GetJsonObject("cliendereco")
+            SA1->A1_EST     := oJSon["clientes"]:GetJsonObject("cliestado")
+            SA1->A1_MUN     := oJSon["clientes"]:GetJsonObject("clicidade")
+            SA1->A1_BAIRRO  := oJSon["clientes"]:GetJsonObject("clibairro")
+            SA1->A1_CGC     := oJSon["clientes"]:GetJsonObject("clicgc")
+            SA1->A1_MSBLQL  := "1"
+        SA1->(MsUnlock())
+
+        oReturn ["clicodigo"]   := oJSon["clientes"]:GetJsonObject("clicodigo")
+        oReturn ['clinome']     := oJSon["clientes"]:GetJsonObject("clinome")
+        oReturn ["cRet"]        := "201 - Sucesso"
+        oReturn["cMessage"]     := EncodeUTF8("Registro incluído com suscesso. ")
+
+        Self:SetStatus(201)
+        Self:SetContentType(APPLICATION_JSON)
+        Self:SetResponse(FwJsonSerialize(oReturn))
+    ENDIF
+SA1->(DbCloseArea())
+
+        
+ENDIF
+
+RestArea(aArea)
+Return lRet
+
+
+
+//Criação do método put (alteração do cadastro do cliente)
+WSMETHOD PUT alteracliente WSRECEIVE WSREST WSRESTCLI
+Local lRet      := .T.
+Local aArea     := GetArea()
+Local oJson     := JsonObject():New()
+Local oReturn   := JsonObject():New()
+
+
+oJson:FromJson(Self:GetContent())
+
+//Verificar se o codigo e loja estão preenchidos
+
+IF Empty(oJson["clientes"]:GetJsonObject("clicodigo")) .OR. Empty(oJson["clientes"]:GetJsonObject("cliloja"))
+
+    SetRestFault(400,EncodeUtf8('Codigo ou loja do cliente estão em branco'))
+    lRet := .F.
+    Return (lRet)
+
+ELSE 
+    DbSelectArea("SA1")
+    DbSetOrder(1)
+    IF !SA1->(DBSeek(xFilial("SA1")+oJson["clientes"]:GetJsonObject("clicodigo")+oJson["clientes"]:GetJsonObject("cliloja")))
+        SetRestFault(401,EncodeUtf8('Codigo ou loja do cliente não encontrado'))
+        lRet := .F.
+        Return (lRet)
+    ELSE
+        RecLock("SA1",.F.)
+            SA1->A1_COD     := oJSon["clientes"]:GetJsonObject("clicodigo")
+            SA1->A1_LOJA    := oJSon["clientes"]:GetJsonObject("cliloja")
+            SA1->A1_NOME    := oJSon["clientes"]:GetJsonObject("clinome")
+            SA1->A1_NREDUZ  := oJSon["clientes"]:GetJsonObject("clinomereduz")
+            SA1->A1_END     := oJSon["clientes"]:GetJsonObject("cliendereco")
+            SA1->A1_EST     := oJSon["clientes"]:GetJsonObject("cliestado")
+            SA1->A1_MUN     := oJSon["clientes"]:GetJsonObject("clicidade")
+            SA1->A1_BAIRRO  := oJSon["clientes"]:GetJsonObject("clibairro")
+            SA1->A1_CGC     := oJSon["clientes"]:GetJsonObject("clicgc")
+            SA1->A1_MSBLQL  := "1"
+        SA1->(MsUnlock())
+
+        oReturn ["clicodigo"]   := oJSon["clientes"]:GetJsonObject("clicodigo")
+        oReturn ['clinome']     := oJSon["clientes"]:GetJsonObject("clinome")
+        oReturn ["cRet"]        := "201 - Sucesso"
+        oReturn["cMessage"]     := EncodeUTF8("Registro alterado com suscesso. ")
+
+        Self:SetStatus(201)
+        Self:SetContentType(APPLICATION_JSON)
+        Self:SetResponse(FwJsonSerialize(oReturn))
+    ENDIF
+
+SA1->(DbCloseArea())
+ENDIF
+
+Return lRet
+
+
+//Criação do metodo de deletar cliente
+WSMETHOD DELETE deletarcliente WSRECEIVE CODCLIENTEDE,CODLOJA WSREST WSRESTCLI 
+    Local lRet := .T. 
+
+    Local cCodDe    := Self:CODCLIENTEDE 
+    Local cLoja     := Self:CODLOJA
+    Local cCliente  := ""
+    Local aArea     := GetArea()
+
+    Local oJson     := JsonObject():New()
+    Local oReturn   := JsonObject():New()
+
+
+
+    DbSelectArea("SA1")
+    SA1->(DbSetOrder(1))
+    IF !SA1->(DbSeek(xFilial("SA1")+cCodDe+cLoja))
+        SetRestFault(200,"Cliente nao localizado")
+        lRet := .F.
+        Return (lRet)
+    ELSE
+        cCliente := SA1->A1_NOME
+        RecLock("SA1",.F.)
+            DbDelete()
+        SA1->(MsUnlock())
+
+        oReturn ["codcli"]      := cCodDe
+        oReturn ["nomecli"]     := cCliente
+        oReturn ["cRet"]        := "201 - Sucesso"
+        oReturn ["cMessage"]    := "Registro excluído com suscesso. "
+
+        Self:SetStatus(201)
+        Self:SetContentType(APPLICATION_JSON)
+        Self:SetResponse(FwJsonSerialize(oReturn)) // Serializa o objeto oReturn para JSON e retorno para o usuario
+    ENDIF
+
+    
+   
+    SA1->(DbCloseArea())
+    RestArea(aArea)
+    FreeObj(oJson)
+    FreeObj(oReturn)
+
+Return lRet
