@@ -17,4 +17,4 @@
 - No método é necessário especificar o tipo de retorno (caso seja uma função, informo o tipo de retorno: Double por exemplo), para procedimentos, informo o VOID 
 
 
-![Classe](img/classe.png)
+![Classe](/Teoria/img/classe.PNG)
