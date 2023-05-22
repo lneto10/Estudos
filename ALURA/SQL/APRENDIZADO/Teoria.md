@@ -75,3 +75,8 @@ LOG ON -- ARQUIVO DE LOG
 - Outros tipos de dados 
 
 
+
+# Criar tabelas
+
+- CREATE TABLE - Criar tabela 
+- Drop Table - Deleta tabela 
