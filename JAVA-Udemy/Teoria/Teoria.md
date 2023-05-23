@@ -18,3 +18,21 @@
 
 
 ![Classe](/Teoria/img/classe.PNG)
+
+# Construtores 
+- É uma operação especial da classe que executa no momento da instanciação do objeto. 
+- É utilizado comumente para iniciar valores de atributos, e fazer com que o objeto receba dados no momento de sua construção. 
+- É possivel especificar mais de um construtor na mesma classe: Sobrecarga. 
+
+# This
+- A palavra this é importante pois referencia o atributo do objeto. Caso não utilize a palavra this, a prioridade é sempre a variável local do método. 
+- Diferencia atributos de variáveis locais. 
+
+# Sobrecarga 
+- É um recurso que uma classe possui de oferecer mais de uma operação com o mesmo nome, porém com diferentes listas de parâmetros
+
+# Encapsulamento
+- É um principio que consiste em esconder detalhes de implementação de uma classe, expondo apenas operações seguras e que mantenham os objetos em um estado consistente. 
+- O objeto deve sempre em estar um estado consistente, e a própria classe deve garantir isso. 
+- Um objeto não deve expor nenhum atributo (modificador de acesso para private)
+- Os atributos devem ser aecssados por meio de métodos get e set.
