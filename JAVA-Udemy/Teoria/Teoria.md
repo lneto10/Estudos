@@ -36,3 +36,9 @@
 - O objeto deve sempre em estar um estado consistente, e a própria classe deve garantir isso. 
 - Um objeto não deve expor nenhum atributo (modificador de acesso para private)
 - Os atributos devem ser aecssados por meio de métodos get e set.
+
+# Modificadores de Acesso 
+- Private: O membro só pode ser acessado na própria classe. 
+- Caso o atributo não esteja especificado o tipo de acesso no momento da sua instanciação, só pode ser acessado pelo mesmo pacote. 
+- Protected: O membro só pode ser acessado no mesmo pacote, bem como subclasses de pacotes diferentes. 
+- Public: pode ser acessado por todas a classes. A menos que esteja em um módulo diferente que não exporte o pacote onde ele está. 
