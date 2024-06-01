@@ -16,6 +16,8 @@ User Function FIFA1()
 						
 	oBrowse := FWMBrowse():New()
 	oBrowse:SetAlias("ZZ0")
+	oBrowse:AddLegend( "ZZ0_ATIVO == '1'"		, "Green"			, "Ativo"  		)
+    oBrowse:AddLegend( "ZZ0_ATIVO == '2'"		, "Red"			, "Inativo"  		)
 	oBrowse:SetDescription(TITULO)
 	oBrowse:SetMenuDef("FIFA1")
 	oBrowse:DisableDetails()	

@@ -5,7 +5,7 @@
 
 /*/{Protheus.doc} FIFA4  
 
-Tela em MVC para Cadastro de times para as rotinas de movimentao de pessoal e recrutamento e seleo
+Tela em MVC para Cadastro de times 
 
 @author	Luiz Neto
 @since 	15/03/2023
@@ -42,8 +42,9 @@ Return(aRotina)
 Static Function ModelDef()
 	Local oStruZZ3  := FWFormStruct( 1, "ZZ3", /*bAvalCampo*/,/*lViewUsado*/ )	
 	Local oModel	:= Nil
+	Local bVldPos   := {|| u_FIFA4A(oModel)}
 			
-	oModel:= MPFormModel():New("FIF4",/*bPreValidacao*/, /*bPosValidacao*/, /*bCommit*/ , /*bCancel*/ )	
+	oModel:= MPFormModel():New("FIF4",/*bPreValidacao*/, bVldPos/*bPosValidacao*/, /*bCommit*/ , /*bCancel*/ )	
 	oModel:SetDescription(TITULO)	
 	oModel:AddFields( "ZZ3MASTER"	, /*cOwner*/	, oStruZZ3, /*bPreValidacao*/	, /*bPosZ00*/	, /*bCarga*/ )	    
 	oModel:GetModel( "ZZ3MASTER" ):SetDescription( TITULO       )	    
@@ -77,3 +78,47 @@ Static Function validaModelo(oModel)
     RestArea(aArea)
 Return(.T.)
 
+/* 
+	Atualiza status dos jogadores 
+
+*/ 
+User Function FIFA4A(oModel)
+
+
+Local oModel    := FwModelActive()
+Local nOpc      := oModel:GetOperation()
+Local cCodigo   := oModel:GetValue("ZZ3MASTER","ZZ3_CODJOG")
+
+if nOpc == 3 .or. nOpc == 4
+
+	if oModel:GetValue("ZZ3MASTER","ZZ3_TIPO") == "S"
+		dbselectarea("ZZ0")
+		ZZ0->(DbSetOrder(1))
+			if ZZ0->(DbSeek(xFilial("ZZ0")+cCodigo))
+				RecLock("ZZ0",.F.)
+					ZZ0->ZZ0_ATIVO 	:= "2"
+					ZZ0->ZZ0_DATA  	:= oModel:GetValue("ZZ3MASTER","ZZ3_DATA")
+					ZZ0->ZZ0_CODTIM := oModel:GetValue("ZZ3MASTER","ZZ3_TIME")
+					ZZ0->ZZ0_TIME 	:= oModel:GetValue("ZZ3MASTER","ZZ3_NOMTIM")
+					ZZ0->ZZ0_VALOR  := oModel:GetValue("ZZ3MASTER","ZZ3_VALOR")
+				ZZ0->(MsUnlock())
+			endif
+		ZZ0->(DbCloseArea())
+	elseif oModel:GetValue("ZZ3MASTER","ZZ3_TIPO") == "E"
+	dbselectarea("ZZ0")
+		ZZ0->(DbSetOrder(1))
+			if ZZ0->(DbSeek(xFilial("ZZ0")+cCodigo))
+				RecLock("ZZ0",.F.)
+					ZZ0->ZZ0_ATIVO 	:= "1"
+					ZZ0->ZZ0_DATA  	:= oModel:GetValue("ZZ3MASTER","ZZ3_DATA")
+					ZZ0->ZZ0_CODTIM := oModel:GetValue("ZZ3MASTER","ZZ3_TIME")
+					ZZ0->ZZ0_TIME 	:= oModel:GetValue("ZZ3MASTER","ZZ3_NOMTIM")
+					ZZ0->ZZ0_VALOR  := oModel:GetValue("ZZ3MASTER","ZZ3_VALOR")
+
+				ZZ0->(MsUnlock())
+			endif
+		ZZ0->(DbCloseArea())
+	endif
+endif
+
+Return .T.
