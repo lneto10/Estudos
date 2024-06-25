@@ -5,6 +5,12 @@
 			"type": "java",
 			"name": "Program",
 			"request": "launch",
+			"mainClass": "Program"
+		},
+		{
+			"type": "java",
+			"name": "Program",
+			"request": "launch",
 			"mainClass": "application.Program",
 			"projectName": "estoque"
 		},
