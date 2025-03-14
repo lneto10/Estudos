@@ -5,6 +5,13 @@
 			"type": "java",
 			"name": "Program",
 			"request": "launch",
+			"mainClass": "application.Program",
+			"projectName": ""
+		},
+		{
+			"type": "java",
+			"name": "Program",
+			"request": "launch",
 			"mainClass": "Program"
 		},
 		{
