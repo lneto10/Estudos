@@ -3,6 +3,13 @@
 	"configurations": [
 		{
 			"type": "java",
+			"name": "ProgramEx1",
+			"request": "launch",
+			"mainClass": "application.ProgramEx1",
+			"projectName": ""
+		},
+		{
+			"type": "java",
 			"name": "Program",
 			"request": "launch",
 			"mainClass": "application.Program",
