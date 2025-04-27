@@ -1,18 +1,2 @@
-## Getting Started
-
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
-
-## Folder Structure
-
-The workspace contains two folders by default, where:
-
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
-
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+Problema exemplo
+Uma locadora brasileira de carros cobra um valor por hora para locações de até12 horas. Porém, se a duração da locação ultrapassar 12 horas, a locação serácobrada com base em um valor diário. Além do valor da locação, é acrescido nopreço o valor do imposto conforme regras do país que, no caso do Brasil, é 20%para valores até 100.00, ou 15% para valores acima de 100.00. Fazer umprograma que lê os dados da locação (modelo do carro, instante inicial e final dalocação), bem como o valor por hora e o valor diário de locação. O programadeve então gerar a nota de pagamento (contendo valor da locação, valor doimposto e valor total do pagamento) e informar os dados na tela. Veja osexemplos.
